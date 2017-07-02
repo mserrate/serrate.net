@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Sentiment analysis of tweets | Marçal Serrate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="In the previous post I have presented an overview of the topology used to analyse twitter streams with Kafka and Storm. Now it&amp;#8217;s time to cover the technical details of the twitter topology. Twit">
+<meta name="keywords" content="BigData,Storm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sentiment analysis of tweets">
+<meta property="og:url" content="http://www.serrate.net/2016/02/07/sentiment-analysis-of-tweets/index.html">
+<meta property="og:site_name" content="Marçal Serrate">
+<meta property="og:description" content="In the previous post I have presented an overview of the topology used to analyse twitter streams with Kafka and Storm. Now it&amp;#8217;s time to cover the technical details of the twitter topology. Twit">
+<meta property="og:image" content="http://www.serrate.net/files/2016/02/TwitterTopology_Analysis.png">
+<meta property="og:updated_time" content="2017-07-02T16:42:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Sentiment analysis of tweets">
+<meta name="twitter:description" content="In the previous post I have presented an overview of the topology used to analyse twitter streams with Kafka and Storm. Now it&amp;#8217;s time to cover the technical details of the twitter topology. Twit">
+<meta name="twitter:image" content="http://www.serrate.net/files/2016/02/TwitterTopology_Analysis.png">
+    
+
+    
+        <link rel="alternate" href="http://feeds.feedburner.com/serratenet" title="Marçal Serrate" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.ico" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-33815546-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <!--<span class="site-title">Marçal Serrate</span>-->
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/events">Events</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/events">Events</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            <section id="main"><article id="post-sentiment-analysis-of-tweets" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Sentiment analysis of tweets
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/02/07/sentiment-analysis-of-tweets/">
+            <time datetime="2016-02-07T15:40:34.000Z" itemprop="datePublished">2016-02-07</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/Storm/">Storm</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>In the previous <a href="http://www.serrate.net/2016/01/05/analysis-of-twitter-streams-with-kafka-and-storm/" target="_blank">post</a> I have presented an overview of the topology used to analyse twitter streams with <strong>Kafka</strong> and <strong>Storm</strong>. Now it&#8217;s time to cover the technical details of the twitter topology.</p>
+<h3 id="Twitter-Topology"><a href="#Twitter-Topology" class="headerlink" title="Twitter Topology"></a>Twitter Topology</h3><img src="/files/2016/02/TwitterTopology_Analysis.png" width="550" height="254" title="Twitter Streaming" alt="Twitter Streaming">
+<p>The declaration of the storm topology using KafkaSpout to read the tweets from a kafka queue:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwitterProcessorTopology</span> <span class="keyword">extends</span> <span class="title">BaseTopology</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TwitterProcessorTopology</span><span class="params">(String configFileLocation)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">super</span>(configFileLocation);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">configureKafkaSpout</span><span class="params">(TopologyBuilder topology)</span> </span>&#123;</div><div class="line">        BrokerHosts hosts = <span class="keyword">new</span> ZkHosts(topologyConfig.getProperty(<span class="string">"zookeeper.host"</span>));</div><div class="line"></div><div class="line">        SpoutConfig spoutConfig = <span class="keyword">new</span> SpoutConfig(</div><div class="line">                hosts,</div><div class="line">                topologyConfig.getProperty(<span class="string">"kafka.twitter.raw.topic"</span>),</div><div class="line">                topologyConfig.getProperty(<span class="string">"kafka.zkRoot"</span>),</div><div class="line">                topologyConfig.getProperty(<span class="string">"kafka.consumer.group"</span>));</div><div class="line">        spoutConfig.scheme= <span class="keyword">new</span> SchemeAsMultiScheme(<span class="keyword">new</span> StringScheme());</div><div class="line"></div><div class="line">        KafkaSpout kafkaSpout= <span class="keyword">new</span> KafkaSpout(spoutConfig);</div><div class="line">        topology.setSpout(<span class="string">"twitterSpout"</span>, kafkaSpout);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">configureBolts</span><span class="params">(TopologyBuilder topology)</span> </span>&#123;</div><div class="line">        <span class="comment">// filtering</span></div><div class="line">        topology.setBolt(<span class="string">"twitterFilter"</span>, <span class="keyword">new</span> TwitterFilterBolt(), <span class="number">4</span>)</div><div class="line">                .shuffleGrouping(<span class="string">"twitterSpout"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// sanitization</span></div><div class="line">        topology.setBolt(<span class="string">"textSanitization"</span>, <span class="keyword">new</span> TextSanitizationBolt(), <span class="number">4</span>)</div><div class="line">                .shuffleGrouping(<span class="string">"twitterFilter"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// sentiment analysis</span></div><div class="line">        topology.setBolt(<span class="string">"sentimentAnalysis"</span>, <span class="keyword">new</span> SentimentAnalysisBolt(), <span class="number">4</span>)</div><div class="line">                .shuffleGrouping(<span class="string">"textSanitization"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// persist tweets with analysis to Cassandra</span></div><div class="line">        topology.setBolt(<span class="string">"sentimentAnalysisToCassandra"</span>, <span class="keyword">new</span> SentimentAnalysisToCassandraBolt(topologyConfig), <span class="number">4</span>)</div><div class="line">                .shuffleGrouping(<span class="string">"sentimentAnalysis"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// divide sentiment by hashtag</span></div><div class="line">        topology.setBolt(<span class="string">"hashtagSplitter"</span>, <span class="keyword">new</span> HashtagSplitterBolt(), <span class="number">4</span>)</div><div class="line">                .shuffleGrouping(<span class="string">"textSanitization"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// persist hashtags to Cassandra</span></div><div class="line">        topology.setBolt(<span class="string">"hashtagCounter"</span>, <span class="keyword">new</span> HashtagCounterBolt(), <span class="number">4</span>)</div><div class="line">                .fieldsGrouping(<span class="string">"hashtagSplitter"</span>, <span class="keyword">new</span> Fields(<span class="string">"tweet_hashtag"</span>));</div><div class="line"></div><div class="line">        topology.setBolt(<span class="string">"topHashtag"</span>, <span class="keyword">new</span> TopHashtagBolt())</div><div class="line">                .globalGrouping(<span class="string">"hashtagCounter"</span>);</div><div class="line"></div><div class="line">        topology.setBolt(<span class="string">"topHashtagToCassandra"</span>, <span class="keyword">new</span> TopHashtagToCassandraBolt(topologyConfig), <span class="number">4</span>)</div><div class="line">                .shuffleGrouping(<span class="string">"topHashtag"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">buildAndSubmit</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        TopologyBuilder builder = <span class="keyword">new</span> TopologyBuilder();</div><div class="line">        configureKafkaSpout(builder);</div><div class="line">        configureBolts(builder);</div><div class="line"></div><div class="line">        Config config = <span class="keyword">new</span> Config();</div><div class="line"></div><div class="line">        <span class="comment">//set producer properties</span></div><div class="line">        Properties props = <span class="keyword">new</span> Properties();</div><div class="line">        props.put(<span class="string">"metadata.broker.list"</span>, topologyConfig.getProperty(<span class="string">"kafka.broker.list"</span>));</div><div class="line">        props.put(<span class="string">"request.required.acks"</span>, <span class="string">"1"</span>);</div><div class="line">        props.put(<span class="string">"serializer.class"</span>, <span class="string">"kafka.serializer.StringEncoder"</span>);</div><div class="line">        config.put(KafkaBolt.KAFKA_BROKER_PROPERTIES, props);</div><div class="line"></div><div class="line">        StormSubmitter.submitTopology(<span class="string">"twitter-processor"</span>, config, builder.createTopology());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        String configFileLocation = args[<span class="number">0</span>];</div><div class="line"></div><div class="line">        TwitterProcessorTopology topology = <span class="keyword">new</span> TwitterProcessorTopology(configFileLocation);</div><div class="line">        topology.buildAndSubmit();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h4 id="1-Filter-Bolt"><a href="#1-Filter-Bolt" class="headerlink" title="1. Filter Bolt"></a>1. Filter Bolt</h4><p>First of all, we are going to filter the tweets that we are interested in. As we are going to perform the sentiment analysis just to tweets in english, we are filtering on this property:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwitterFilterBolt</span> <span class="keyword">extends</span> <span class="title">BaseBasicBolt</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOG = LoggerFactory.getLogger(TwitterFilterBolt.class);</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Tuple tuple, BasicOutputCollector collector)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            JSONObject object = (JSONObject)JSONValue.parseWithException(tuple.getString(<span class="number">0</span>));</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (object.containsKey(<span class="string">"lang"</span>) &amp;amp;amp;&amp;amp;amp; <span class="string">"en"</span>.equals(object.get(<span class="string">"lang"</span>))) &#123;</div><div class="line">                <span class="keyword">long</span> id = (<span class="keyword">long</span>)object.get(<span class="string">"id"</span>);</div><div class="line">                String text = (String)object.get(<span class="string">"text"</span>);</div><div class="line">                String createdAt = (String)object.get(<span class="string">"created_at"</span>);</div><div class="line">                JSONObject entities= (JSONObject)object.get(<span class="string">"entities"</span>);</div><div class="line">                JSONArray hashtags =(JSONArray)entities.get(<span class="string">"hashtags"</span>);</div><div class="line">                HashSet&amp;amp;lt;String&amp;amp;gt; hashtagList = <span class="keyword">new</span> HashSet&amp;amp;lt;String&amp;amp;gt;();</div><div class="line">                <span class="keyword">for</span>(Object hashtag : hashtags)</div><div class="line">                &#123;</div><div class="line">                    hashtagList.add(((String)((JSONObject)hashtag).get(<span class="string">"text"</span>)).toLowerCase());</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                collector.emit(<span class="keyword">new</span> Values(id, text, hashtagList, createdAt));</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">else</span> &#123;</div><div class="line">                LOG.debug(<span class="string">"Ignoring non-english tweets"</span>);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125; <span class="keyword">catch</span> (ParseException e) &#123;</div><div class="line">            LOG.error(<span class="string">"Error parsing tweet: "</span> + e.getMessage());</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">declareOutputFields</span><span class="params">(OutputFieldsDeclarer declarer)</span> </span>&#123;</div><div class="line">        declarer.declare(<span class="keyword">new</span> Fields(<span class="string">"tweet_id"</span>, <span class="string">"tweet_text"</span>, <span class="string">"tweet_hashtags"</span>, <span class="string">"tweet_created_at"</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="2-Sanitization-Bolt"><a href="#2-Sanitization-Bolt" class="headerlink" title="2. Sanitization Bolt"></a>2. Sanitization Bolt</h4><p>Then, we will sanitise our tweets by converting accented characters into unaccented characters and by removing single letters or numbers:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TextSanitizationBolt</span> <span class="keyword">extends</span> <span class="title">BaseBasicBolt</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOG = LoggerFactory.getLogger(TextSanitizationBolt.class);</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Tuple tuple, BasicOutputCollector collector)</span> </span>&#123;</div><div class="line"></div><div class="line">        String text = tuple.getString(<span class="number">1</span>);</div><div class="line">        String normalizedText = Normalizer.normalize(text, Normalizer.Form.NFD);</div><div class="line">        text = normalizedText.replaceAll(<span class="string">"\\p&#123;InCombiningDiacriticalMarks&#125;+"</span>, <span class="string">""</span>);</div><div class="line">        text = text.replaceAll(<span class="string">"[^\\p&#123;L&#125;\\p&#123;Nd&#125;]+"</span>, <span class="string">" "</span>).toLowerCase();</div><div class="line"></div><div class="line">        collector.emit(<span class="keyword">new</span> Values(</div><div class="line">                tuple.getLongByField(<span class="string">"tweet_id"</span>),</div><div class="line">                text,</div><div class="line">                tuple.getValueByField(<span class="string">"tweet_hashtags"</span>),</div><div class="line">                tuple.getStringByField(<span class="string">"tweet_created_at"</span>)));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">declareOutputFields</span><span class="params">(OutputFieldsDeclarer declarer)</span> </span>&#123;</div><div class="line">        declarer.declare(<span class="keyword">new</span> Fields(<span class="string">"tweet_id"</span>, <span class="string">"tweet_text"</span>, <span class="string">"tweet_hashtags"</span>, <span class="string">"tweet_created_at"</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="3a-Sentiment-Analysis-Bolt"><a href="#3a-Sentiment-Analysis-Bolt" class="headerlink" title="3a. Sentiment Analysis Bolt"></a>3a. Sentiment Analysis Bolt</h4><p>On this bolt we are scoring the tweet by each of its words using <a href="http://sentiwordnet.isti.cnr.it/" target="_blank">SentiWordNet</a>. That&#8217;s not the best way to do it as it can have false positives or negatives given that it does the classification word by word independently: it does not cover the tweet context or sarcasm, etc. but that&#8217;s ok for a sample 🙂</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SentimentAnalysisBolt</span> <span class="keyword">extends</span> <span class="title">BaseBasicBolt</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOG = LoggerFactory.getLogger(SentimentAnalysisBolt.class);</div><div class="line">    SentiWordNet sentiWordNet;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">prepare</span><span class="params">(Map stormConf, TopologyContext context)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            sentiWordNet = SentiWordNet.getInstance();</div><div class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">            LOG.error(<span class="string">"Problem parsing SentiWordNet file: "</span> + e.getMessage());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Tuple tuple, BasicOutputCollector collector)</span> </span>&#123;</div><div class="line">        <span class="keyword">double</span> count = <span class="number">0</span>;</div><div class="line">        String text = tuple.getStringByField(<span class="string">"tweet_text"</span>);</div><div class="line"></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            String delimiters = <span class="string">"\\W"</span>;</div><div class="line">            String[] tokens = text.split(delimiters);</div><div class="line">            <span class="keyword">double</span> feeling = <span class="number">0</span>;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &amp;amp;lt; tokens.length; ++i) &#123;</div><div class="line">                <span class="keyword">if</span> (!tokens[i].isEmpty()) &#123;</div><div class="line">                    <span class="comment">// Search as adjective</span></div><div class="line">                    feeling = sentiWordNet.extract(tokens[i], <span class="string">"a"</span>);</div><div class="line">                    count += feeling;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            LOG.info(<span class="string">"text: "</span> + text + <span class="string">" count: "</span> + count);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            LOG.error(<span class="string">"Problem found when classifying the text: "</span> + e.getMessage());</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        collector.emit(<span class="keyword">new</span> Values(</div><div class="line">                tuple.getLongByField(<span class="string">"tweet_id"</span>),</div><div class="line">                text,</div><div class="line">                count,</div><div class="line">                tuple.getValueByField(<span class="string">"tweet_hashtags"</span>),</div><div class="line">                tuple.getStringByField(<span class="string">"tweet_created_at"</span>)));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">declareOutputFields</span><span class="params">(OutputFieldsDeclarer declarer)</span> </span>&#123;</div><div class="line">        declarer.declare(<span class="keyword">new</span> Fields(<span class="string">"tweet_id"</span>, <span class="string">"tweet_text"</span>, <span class="string">"tweet_sentiment"</span>, <span class="string">"tweet_hashtags"</span>, <span class="string">"tweet_created_at"</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="4a-Save-results-to-Cassandra"><a href="#4a-Save-results-to-Cassandra" class="headerlink" title="4a. Save results to Cassandra"></a>4a. Save results to Cassandra</h4><p>Finally, we will store to Cassandra the the tweet with the score and its hashtags if any:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SentimentAnalysisToCassandraBolt</span> <span class="keyword">extends</span> <span class="title">CassandraBaseBolt</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOG = LoggerFactory.getLogger(SentimentAnalysisToCassandraBolt.class);</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SentimentAnalysisToCassandraBolt</span><span class="params">(Properties properties)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(properties);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Tuple tuple, BasicOutputCollector collector)</span> </span>&#123;</div><div class="line"></div><div class="line">        HashSet&lt;String&gt; hashtags = (HashSet&lt;String&gt;)tuple.getValueByField(<span class="string">"tweet_hashtags"</span>);</div><div class="line"></div><div class="line">        Statement statement = QueryBuilder.update(<span class="string">"tweet_sentiment_analysis"</span>)</div><div class="line">                .with(QueryBuilder.set(<span class="string">"tweet"</span>, tuple.getStringByField(<span class="string">"tweet_text"</span>)))</div><div class="line">                .and(QueryBuilder.set(<span class="string">"sentiment"</span>, tuple.getDoubleByField(<span class="string">"tweet_sentiment"</span>)))</div><div class="line">                .and(QueryBuilder.addAll(<span class="string">"hashtags"</span>, hashtags))</div><div class="line">                .and(QueryBuilder.set(<span class="string">"created_at"</span>, tuple.getStringByField(<span class="string">"tweet_created_at"</span>)))</div><div class="line">                .where(QueryBuilder.eq(<span class="string">"tweet_id"</span>, tuple.getLongByField(<span class="string">"tweet_id"</span>)));</div><div class="line"></div><div class="line">        LOG.debug(statement.toString());</div><div class="line"></div><div class="line">        session.execute(statement);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">declareOutputFields</span><span class="params">(OutputFieldsDeclarer declarer)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="3b-Hashtag-Splitter-Bolt"><a href="#3b-Hashtag-Splitter-Bolt" class="headerlink" title="3b. Hashtag Splitter Bolt"></a>3b. Hashtag Splitter Bolt</h4><p>That branch of the topology graph is responsible for splitting the different hashtags and emitting a tuple per hashtag to the next bolt. That&#8217;s why we inherit from BaseRichBolt in order to manually ACK the tuple after all hashtags have been emitted.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HashtagSplitterBolt</span> <span class="keyword">extends</span> <span class="title">BaseRichBolt</span> </span>&#123;</div><div class="line">    OutputCollector collector;</div><div class="line">    Map&lt;String, Integer&gt; count = <span class="keyword">new</span> HashMap&lt;String, Integer&gt;();</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">prepare</span><span class="params">(Map map, TopologyContext topologyContext, OutputCollector collector)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.collector = collector;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Tuple tuple)</span> </span>&#123;</div><div class="line">        HashSet&lt;String&gt; hashtags = (HashSet&lt;String&gt;)tuple.getValueByField(<span class="string">"tweet_hashtags"</span>);</div><div class="line"></div><div class="line">        <span class="keyword">for</span> (String hashtag : hashtags) &#123;</div><div class="line">            collector.emit(<span class="keyword">new</span> Values(hashtag));</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        collector.ack(tuple);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">declareOutputFields</span><span class="params">(OutputFieldsDeclarer declarer)</span> </span>&#123;</div><div class="line">        declarer.declare(<span class="keyword">new</span> Fields(<span class="string">"tweet_hashtag"</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="4b-Hashtag-Counter-Bolt"><a href="#4b-Hashtag-Counter-Bolt" class="headerlink" title="4b. Hashtag Counter Bolt"></a>4b. Hashtag Counter Bolt</h4><p>In this particular case, we are using <strong>Fields Grouping</strong> because we want to partition the stream by hashtag. It means that the same hashtag will always go to the same task. Thus, we can use a hashmap to count the number of occurrences of a hashtag:</p>
+<img src="/files/2016/02/HashtagSplit.png" width="180" height="228" title="Hashtag Split" alt="Hashtag Split">
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HashtagCounterBolt</span> <span class="keyword">extends</span> <span class="title">BaseBasicBolt</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOG = LoggerFactory.getLogger(HashtagCounterBolt.class);</div><div class="line">    <span class="keyword">private</span> Map&lt;String, Long&gt; hashtag_count = <span class="keyword">new</span> HashMap&lt;String, Long&gt;();</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Tuple tuple, BasicOutputCollector collector)</span> </span>&#123;</div><div class="line">        String hashtag = tuple.getStringByField(<span class="string">"tweet_hashtag"</span>);</div><div class="line">        Long count = hashtag_count.get(hashtag);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (count == <span class="keyword">null</span>)</div><div class="line">            count = <span class="number">0L</span>;</div><div class="line"></div><div class="line">        count++;</div><div class="line">        hashtag_count.put(hashtag, count);</div><div class="line"></div><div class="line">        collector.emit(<span class="keyword">new</span> Values(hashtag, count));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">declareOutputFields</span><span class="params">(OutputFieldsDeclarer declarer)</span> </span>&#123;</div><div class="line">        declarer.declare(<span class="keyword">new</span> Fields(<span class="string">"hashtag"</span>, <span class="string">"count"</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="5b-Top-Hashtag-Bolt"><a href="#5b-Top-Hashtag-Bolt" class="headerlink" title="5b.  Top Hashtag Bolt"></a>5b.  Top Hashtag Bolt</h4><p>For that bolt, we are using <strong>Global Grouping</strong> to get the top 20 hashtags. Global grouping means that all hashtags will go to the same bolt&#8217;s task. For that use case, we need a sliding windows in order to get the top 20 hashtags every 10 seconds. We are relying on the Storm <strong>Tick Tuple</strong> feature. For normal tuples we just do the ranking of hashtags and, when a tick tuple is received (configured to get it every 10sec) we emit the ranking calculated over this window of time.</p>
+<img src="/files/2016/02/TopN.png" width="209" height="221" title="Top N" alt="Top N">
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TopHashtagBolt</span> <span class="keyword">extends</span> <span class="title">BaseBasicBolt</span> </span>&#123;</div><div class="line">    List&lt;List&gt; rankings = <span class="keyword">new</span> ArrayList&lt;List&gt;();</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOG = LoggerFactory.getLogger(TopHashtagBolt.class);</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Integer TOPN = <span class="number">20</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Integer TICK_FREQUENCY = <span class="number">10</span>;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Tuple tuple, BasicOutputCollector collector)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (isTickTuple(tuple)) &#123;</div><div class="line">            LOG.debug(<span class="string">"Tick: "</span> + rankings);</div><div class="line">            collector.emit(<span class="keyword">new</span> Values(<span class="keyword">new</span> ArrayList(rankings)));</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            rankHashtag(tuple);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">declareOutputFields</span><span class="params">(OutputFieldsDeclarer declarer)</span> </span>&#123;</div><div class="line">        declarer.declare(<span class="keyword">new</span> Fields(<span class="string">"tophashtags"</span>));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">getComponentConfiguration</span><span class="params">()</span> </span>&#123;</div><div class="line">        Config conf = <span class="keyword">new</span> Config();</div><div class="line">        conf.put(Config.TOPOLOGY_TICK_TUPLE_FREQ_SECS, TICK_FREQUENCY);</div><div class="line">        <span class="keyword">return</span> conf;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">rankHashtag</span><span class="params">(Tuple tuple)</span> </span>&#123;</div><div class="line">        String hashtag = tuple.getStringByField(<span class="string">"hashtag"</span>);</div><div class="line">        Integer existingIndex = find(hashtag);</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != existingIndex)</div><div class="line">            rankings.set(existingIndex, tuple.getValues());</div><div class="line">        <span class="keyword">else</span></div><div class="line">            rankings.add(tuple.getValues());</div><div class="line"></div><div class="line">        Collections.sort(rankings, <span class="keyword">new</span> Comparator&lt;List&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(List o1, List o2)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> compareRanking(o1, o2);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        shrinkRanking();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> Integer <span class="title">find</span><span class="params">(String hashtag)</span> </span>&#123;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rankings.size(); ++i) &#123; String current = (String) rankings.get(i).get(<span class="number">0</span>); <span class="keyword">if</span> (current.equals(hashtag)) &#123; <span class="keyword">return</span> i; &#125; &#125; <span class="keyword">return</span> <span class="keyword">null</span>; &#125; <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">compareRanking</span><span class="params">(List one, List two)</span> </span>&#123; <span class="keyword">long</span> valueOne = (Long) one.get(<span class="number">1</span>); <span class="keyword">long</span> valueTwo = (Long) two.get(<span class="number">1</span>); <span class="keyword">long</span> delta = valueTwo - valueOne; <span class="keyword">if</span>(delta &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (delta &lt; <span class="number">0</span>) &#123; <span class="keyword">return</span> -<span class="number">1</span>; &#125; <span class="keyword">else</span> &#123; <span class="keyword">return</span> <span class="number">0</span>; &#125; &#125; <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">shrinkRanking</span><span class="params">()</span> </span>&#123; <span class="keyword">int</span> size = rankings.size(); <span class="keyword">if</span> (TOPN &gt;= size) <span class="keyword">return</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = TOPN; i &lt; size; i++) &#123;</div><div class="line">            rankings.remove(rankings.size() - <span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isTickTuple</span><span class="params">(Tuple tuple)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> tuple.getSourceComponent().equals(Constants.SYSTEM_COMPONENT_ID)</div><div class="line">                &amp;amp;&amp;amp; tuple.getSourceStreamId().equals(Constants.SYSTEM_TICK_STREAM_ID);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="6b-Save-results-to-Cassandra"><a href="#6b-Save-results-to-Cassandra" class="headerlink" title="6b. Save results to Cassandra"></a>6b. Save results to Cassandra</h4><p>Finally, we are storing the top N hashtags per day in Cassandra. For that we&#8217;re using the <strong>row partitioning</strong> pattern to store a row per day and the top hashtags for each time bucket (20 seconds)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TopHashtagToCassandraBolt</span> <span class="keyword">extends</span> <span class="title">CassandraBaseBolt</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOG = LoggerFactory.getLogger(TopHashtagToCassandraBolt.class);</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TopHashtagToCassandraBolt</span><span class="params">(Properties properties)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(properties);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Tuple tuple, BasicOutputCollector collector)</span> </span>&#123;</div><div class="line">        List&lt;List&gt; rankings = (List) tuple.getValue(<span class="number">0</span>);</div><div class="line"></div><div class="line">        Map&lt;String, Long&gt; rankingMap = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line"></div><div class="line">        <span class="keyword">for</span> (List list : rankings) &#123;</div><div class="line">            rankingMap.put((String) list.get(<span class="number">0</span>), (Long) list.get(<span class="number">1</span>));</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        DateFormat df = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd"</span>);</div><div class="line"></div><div class="line">        Statement statement = QueryBuilder.insertInto(<span class="string">"top_hashtag_by_day"</span>)</div><div class="line">                .value(<span class="string">"date"</span>, df.format(<span class="keyword">new</span> Date()))</div><div class="line">                .value(<span class="string">"bucket_time"</span>, QueryBuilder.raw(<span class="string">"dateof(now())"</span>))</div><div class="line">                .value(<span class="string">"ranking"</span>, rankingMap);</div><div class="line"></div><div class="line">        LOG.debug(statement.toString());</div><div class="line"></div><div class="line">        session.execute(statement);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">declareOutputFields</span><span class="params">(OutputFieldsDeclarer declarer)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Next-steps"><a href="#Next-steps" class="headerlink" title="Next steps"></a>Next steps</h3><p>Although the hashtag counter may work, I will not say that is entirely correct and there are better ways to do it:</p>
+<ul>
+<li>You can take a look to this excellent resource: <a href="http://www.michael-noll.com/blog/2013/01/18/implementing-real-time-trending-topics-in-storm/" target="_blank">http://www.michael-noll.com/blog/2013/01/18/implementing-real-time-trending-topics-in-storm/</a></li>
+<li>Using <strong>Storm Trident</strong>: In the next post I will show how to use the high level abstraction from Storm that allows to process a stream as a sequence of small batches of data (aka <strong>micro-batching</strong>) and fits better for the top hashtags example.</li>
+</ul>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://www.serrate.net/2016/02/07/sentiment-analysis-of-tweets/" data-id="cj4d2ji55000kgc81lxf2iiy5" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://www.serrate.net/2016/02/07/sentiment-analysis-of-tweets/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2016/02/07/sentiment-analysis-of-tweets/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2016/03/15/preview-of-kafka-streams/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    Preview of Kafka Streams
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2016/01/05/analysis-of-twitter-streams-with-kafka-and-storm/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">Analysis of twitter streams with Kafka and Storm</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">recent</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/03/15/preview-of-kafka-streams/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2016/03/KafkaStreams-2.png)" alt="Preview of Kafka Streams" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
+                            <p class="item-title"><a href="/2016/03/15/preview-of-kafka-streams/" class="title">Preview of Kafka Streams</a></p>
+                            <p class="item-date"><time datetime="2016-03-15T01:02:29.000Z" itemprop="datePublished">2016-03-15</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/02/07/sentiment-analysis-of-tweets/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2016/02/TwitterTopology_Analysis.png)" alt="Sentiment analysis of tweets" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
+                            <p class="item-title"><a href="/2016/02/07/sentiment-analysis-of-tweets/" class="title">Sentiment analysis of tweets</a></p>
+                            <p class="item-date"><time datetime="2016-02-07T15:40:34.000Z" itemprop="datePublished">2016-02-07</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/01/05/analysis-of-twitter-streams-with-kafka-and-storm/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2016/02/TwitterStreaming.png)" alt="Analysis of twitter streams with Kafka and Storm" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
+                            <p class="item-title"><a href="/2016/01/05/analysis-of-twitter-streams-with-kafka-and-storm/" class="title">Analysis of twitter streams with Kafka and Storm</a></p>
+                            <p class="item-date"><time datetime="2016-01-05T01:24:07.000Z" itemprop="datePublished">2016-01-05</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2015/12/13/big-data-streams-and-lambdas/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2015/12/stream_banner.png)" alt="Big Data: streams and lambdas" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
+                            <p class="item-title"><a href="/2015/12/13/big-data-streams-and-lambdas/" class="title">Big Data: streams and lambdas</a></p>
+                            <p class="item-date"><time datetime="2015-12-13T00:31:08.000Z" itemprop="datePublished">2015-12-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2015/02/17/speaking-at-dotnetspain-conference/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2015/02/unnamed.jpg)" alt="Speaking at DotNetSpain conference" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
+                            <p class="item-title"><a href="/2015/02/17/speaking-at-dotnetspain-conference/" class="title">Speaking at DotNetSpain conference</a></p>
+                            <p class="item-date"><time datetime="2015-02-17T17:36:13.000Z" itemprop="datePublished">2015-02-17</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">categories</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/NServiceBus/">NServiceBus</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NoSQL/">NoSQL</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">archives</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">November 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">October 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">September 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">August 2012</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">tags</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Azure/">Azure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BigData/">BigData</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CQRS/">CQRS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cassandra/">Cassandra</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/">DDD</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventStore/">EventStore</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Misc/">Misc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NServiceBus/">NServiceBus</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/">NoSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOA/">SOA</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Storm/">Storm</a><span class="tag-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">tag cloud</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Azure/" style="font-size: 10px;">Azure</a> <a href="/tags/BigData/" style="font-size: 20px;">BigData</a> <a href="/tags/CQRS/" style="font-size: 15px;">CQRS</a> <a href="/tags/Cassandra/" style="font-size: 12.5px;">Cassandra</a> <a href="/tags/DDD/" style="font-size: 15px;">DDD</a> <a href="/tags/EventStore/" style="font-size: 10px;">EventStore</a> <a href="/tags/Kafka/" style="font-size: 12.5px;">Kafka</a> <a href="/tags/Misc/" style="font-size: 10px;">Misc</a> <a href="/tags/NServiceBus/" style="font-size: 15px;">NServiceBus</a> <a href="/tags/NoSQL/" style="font-size: 10px;">NoSQL</a> <a href="/tags/SOA/" style="font-size: 17.5px;">SOA</a> <a href="/tags/Storm/" style="font-size: 15px;">Storm</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">links</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://www.serrate.es">serrate.es</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2017 Marçal Serrate<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'http://www.serrate.net/2016/02/07/sentiment-analysis-of-tweets/';
+        
+        this.page.identifier = 'sentiment-analysis-of-tweets';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'serrate-en' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

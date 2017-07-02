@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Preview of Kafka Streams | Marçal Serrate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="The preview of Kafka Streams, which is one of the main features of the upcoming Apache Kafka 0.10, was announced by Jay Kreps this week. Kafka joins the Stream Processing clubKafka Streams is a librar">
+<meta name="keywords" content="BigData,Kafka,Storm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Preview of Kafka Streams">
+<meta property="og:url" content="http://www.serrate.net/2016/03/15/preview-of-kafka-streams/index.html">
+<meta property="og:site_name" content="Marçal Serrate">
+<meta property="og:description" content="The preview of Kafka Streams, which is one of the main features of the upcoming Apache Kafka 0.10, was announced by Jay Kreps this week. Kafka joins the Stream Processing clubKafka Streams is a librar">
+<meta property="og:image" content="http://www.serrate.net/files/2016/03/KafkaStreams-2.png">
+<meta property="og:updated_time" content="2017-07-02T16:41:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Preview of Kafka Streams">
+<meta name="twitter:description" content="The preview of Kafka Streams, which is one of the main features of the upcoming Apache Kafka 0.10, was announced by Jay Kreps this week. Kafka joins the Stream Processing clubKafka Streams is a librar">
+<meta name="twitter:image" content="http://www.serrate.net/files/2016/03/KafkaStreams-2.png">
+    
+
+    
+        <link rel="alternate" href="http://feeds.feedburner.com/serratenet" title="Marçal Serrate" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.ico" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-33815546-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <!--<span class="site-title">Marçal Serrate</span>-->
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/events">Events</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/events">Events</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+            <section id="main"><article id="post-preview-of-kafka-streams" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Preview of Kafka Streams
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/03/15/preview-of-kafka-streams/">
+            <time datetime="2016-03-15T01:02:29.000Z" itemprop="datePublished">2016-03-15</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/Kafka/">Kafka</a>, <a class="tag-link" href="/tags/Storm/">Storm</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>The preview of <strong>Kafka Streams</strong>, which is one of the main features of the upcoming <strong>Apache Kafka 0.10</strong>, was <a href="http://www.confluent.io/blog/introducing-kafka-streams-stream-processing-made-simple" target="_blank">announced by Jay Kreps this week</a>.</p>
+<h3 id="Kafka-joins-the-Stream-Processing-club"><a href="#Kafka-joins-the-Stream-Processing-club" class="headerlink" title="Kafka joins the Stream Processing club"></a>Kafka joins the Stream Processing club</h3><p>Kafka Streams is a library to build streaming applications using Kafka topics as input/output. Kafka Streams is in the same league as other streaming systems such as: <strong>Apache Storm</strong>, <strong>Apache Flink</strong> and, not surprisingly, <strong>Apache Samza</strong> which also uses Kafka for input or output of streams.</p>
+<p>One of the main advantages is that if you&#8217;re already using Apache Kafka and you need real-time processing, you just need to use the library and you are good to go.</p>
+<p>Other important features are: <strong>stateful</strong> processing, <strong>windowing</strong> and ability to be deployed using your preferred solution: a simple command line, <strong>Mesos</strong>, <strong>YARN</strong> or <strong>kubernetes</strong> and <strong>docker</strong> if you&#8217;re a container party boy.</p>
+<h3 id="Streams-and-Tables"><a href="#Streams-and-Tables" class="headerlink" title="Streams and Tables"></a>Streams and Tables</h3><p>One of the key concepts in Kafka Streams is the support of <strong>KStream</strong> and <strong>KTable</strong>.</p>
+<p>That isn&#8217;t a new concept if you come from the <strong><a href="http://www.serrate.net/2015/02/17/speaking-at-dotnetspain-conference/" target="_blank">Event Sourcing</a></strong> world: the KStream is the append-only event store where its state is given by replaying the events from the beginning of time until the last event whereas KTable is the snapshot or projection of the current state of the stream given a point in time.</p>
+<h3 id="Example-Twitter-Hashtags-Job"><a href="#Example-Twitter-Hashtags-Job" class="headerlink" title="Example: Twitter Hashtags Job"></a>Example: Twitter Hashtags Job</h3><img src="/files/2016/03/KafkaStreams-2.png" width="749" height="303" title="Kafka Streams" alt="Kafka Streams: KStream and KTable">
+<h3 id="Show-me-the-code"><a href="#Show-me-the-code" class="headerlink" title="Show me the code!"></a>Show me the code!</h3><p>You can find the complete example here: <a href="https://github.com/mserrate/kafka-streams-app" target="_blank">https://github.com/mserrate/kafka-streams-app</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">KStream&lt;String, JsonNode&gt; source = builder.stream(stringDeserializer, jsonDeserializer, <span class="string">"streams-hashtag-input"</span>);</div><div class="line"></div><div class="line">KTable&lt;String, Long&gt; counts = source</div><div class="line">        .filter(<span class="keyword">new</span> HashtagFilter())</div><div class="line">        .flatMapValues(<span class="keyword">new</span> HashtagSplitter())</div><div class="line">        .map(<span class="keyword">new</span> HashtagMapper())</div><div class="line">        .countByKey(stringSerializer, longSerializer, stringDeserializer, longDeserializer, <span class="string">"Counts"</span>);</div><div class="line"></div><div class="line">counts.to(<span class="string">"streams-hashtag-count-output"</span>, stringSerializer, longSerializer);</div></pre></td></tr></table></figure>
+<p>For this example I&#8217;ve been using a simple TweetProducer who connects to the <strong>Twitter Streaming API</strong> and sends JSON events to a Kafka topic.</p>
+<p>This topic is read as a KStream and then we begin the process:</p>
+<ol>
+<li>Filter out the tweets without hashtags</li>
+<li>Apply a flatMapValues (we are just interested in the values, not the keys) to split the different hashtags in a tweet</li>
+<li>Apply a map to return a key (hashtag) value (hashtag) as we want to aggregate by hashtag</li>
+<li>Aggregate the streams per key (the hashtag) and count them</li>
+</ol>
+<p>&nbsp;</p>
+<p>Finally we send the KTable to the output queue.</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://www.serrate.net/2016/03/15/preview-of-kafka-streams/" data-id="cj4d2ji5a000qgc817xywor6l" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://www.serrate.net/2016/03/15/preview-of-kafka-streams/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2016/03/15/preview-of-kafka-streams/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2016/02/07/sentiment-analysis-of-tweets/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">Sentiment analysis of tweets</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">recent</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/03/15/preview-of-kafka-streams/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2016/03/KafkaStreams-2.png)" alt="Preview of Kafka Streams" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
+                            <p class="item-title"><a href="/2016/03/15/preview-of-kafka-streams/" class="title">Preview of Kafka Streams</a></p>
+                            <p class="item-date"><time datetime="2016-03-15T01:02:29.000Z" itemprop="datePublished">2016-03-15</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/02/07/sentiment-analysis-of-tweets/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2016/02/TwitterTopology_Analysis.png)" alt="Sentiment analysis of tweets" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
+                            <p class="item-title"><a href="/2016/02/07/sentiment-analysis-of-tweets/" class="title">Sentiment analysis of tweets</a></p>
+                            <p class="item-date"><time datetime="2016-02-07T15:40:34.000Z" itemprop="datePublished">2016-02-07</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/01/05/analysis-of-twitter-streams-with-kafka-and-storm/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2016/02/TwitterStreaming.png)" alt="Analysis of twitter streams with Kafka and Storm" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
+                            <p class="item-title"><a href="/2016/01/05/analysis-of-twitter-streams-with-kafka-and-storm/" class="title">Analysis of twitter streams with Kafka and Storm</a></p>
+                            <p class="item-date"><time datetime="2016-01-05T01:24:07.000Z" itemprop="datePublished">2016-01-05</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2015/12/13/big-data-streams-and-lambdas/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2015/12/stream_banner.png)" alt="Big Data: streams and lambdas" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
+                            <p class="item-title"><a href="/2015/12/13/big-data-streams-and-lambdas/" class="title">Big Data: streams and lambdas</a></p>
+                            <p class="item-date"><time datetime="2015-12-13T00:31:08.000Z" itemprop="datePublished">2015-12-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2015/02/17/speaking-at-dotnetspain-conference/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2015/02/unnamed.jpg)" alt="Speaking at DotNetSpain conference" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
+                            <p class="item-title"><a href="/2015/02/17/speaking-at-dotnetspain-conference/" class="title">Speaking at DotNetSpain conference</a></p>
+                            <p class="item-date"><time datetime="2015-02-17T17:36:13.000Z" itemprop="datePublished">2015-02-17</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">categories</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/NServiceBus/">NServiceBus</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NoSQL/">NoSQL</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">archives</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">November 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">October 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">September 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">August 2012</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">tags</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Azure/">Azure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BigData/">BigData</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CQRS/">CQRS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cassandra/">Cassandra</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/">DDD</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventStore/">EventStore</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Misc/">Misc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NServiceBus/">NServiceBus</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/">NoSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOA/">SOA</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Storm/">Storm</a><span class="tag-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">tag cloud</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Azure/" style="font-size: 10px;">Azure</a> <a href="/tags/BigData/" style="font-size: 20px;">BigData</a> <a href="/tags/CQRS/" style="font-size: 15px;">CQRS</a> <a href="/tags/Cassandra/" style="font-size: 12.5px;">Cassandra</a> <a href="/tags/DDD/" style="font-size: 15px;">DDD</a> <a href="/tags/EventStore/" style="font-size: 10px;">EventStore</a> <a href="/tags/Kafka/" style="font-size: 12.5px;">Kafka</a> <a href="/tags/Misc/" style="font-size: 10px;">Misc</a> <a href="/tags/NServiceBus/" style="font-size: 15px;">NServiceBus</a> <a href="/tags/NoSQL/" style="font-size: 10px;">NoSQL</a> <a href="/tags/SOA/" style="font-size: 17.5px;">SOA</a> <a href="/tags/Storm/" style="font-size: 15px;">Storm</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">links</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://www.serrate.es">serrate.es</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2017 Marçal Serrate<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'http://www.serrate.net/2016/03/15/preview-of-kafka-streams/';
+        
+        this.page.identifier = 'preview-of-kafka-streams';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'serrate-en' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
