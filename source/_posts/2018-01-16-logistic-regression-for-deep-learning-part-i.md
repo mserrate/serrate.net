@@ -1,5 +1,5 @@
 ---
-title: Logistic Regression for Deep Learning
+title: Logistic Regression for Deep Learning (I)
 categories:
   - Machine Learning
 tags:
@@ -74,3 +74,26 @@ $$
 As we want to improve as much as possible the performance, we are going to try to find the w & b  values that minimizes this cost function. And that, is basically what **gradient descent** does for us.
 
 ## Gradient descent
+Gradient descent is one of the most popuar optimization methods for neural networks for its simplicity (although it can have convergence problems due local minimums). Other optimization methods are: {% link Adam https://arxiv.org/abs/1412.6980  %} or RMSprop.
+The basic idea on gradient descent is that on each iteration (determined by the *slope* or derivative $\partial$), the **weights** are updated incrementally using a *learning rate* $\alpha$.
+
+A visual interpretation of **gradient descent** is the following:
+
+{% img /files/2018/01/gradient.png 450 243 '"Gradient descent"' '"Gradient descent <br />Source: <a href=https://sebastianraschka.com/faq/docs/closed-form-vs-gd.html>sebastianraschka.com</a>"' %}
+
+Given our cost function $\mathcal{J}(w, b)$, weights and bias are updated with the following formula:
+
+$$
+\\begin{align}
+  w = w - \alpha\,\frac{\partial\,\mathcal{J}(w, b)}{\partial w}
+\\end{align}
+$$
+$$
+\\begin{align}
+  b = b - \alpha\,\frac{\partial\,\mathcal{J}(w, b)}{\partial b}
+\\end{align}
+$$
+
+where the symbol $\partial$ in $\partial\,\mathcal{J}(w, b)$ basically means the **derivative** of the cost function.
+
+In the next post, we will see how apply this theory to a practical example with **python**.
