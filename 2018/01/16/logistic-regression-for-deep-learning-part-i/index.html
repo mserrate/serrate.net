@@ -3,22 +3,22 @@
 <head>
     <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     
-    <title>UI Composition for Services | Marçal Serrate</title>
+    <title>Logistic Regression for Deep Learning (I) | Marçal Serrate</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="One of the most important concepts when applying either SOA or DDD is the definition of Services (or Bounded Contexts in the DDD lingo). Each of these services will be responsible for its own data and">
-<meta name="keywords" content="DDD,SOA">
+    <meta name="description" content="In this post we’re going to cover some basic intuition to work on logistic regression for Deep Learning algorithms. Logistic regression is an algorithm for binary classification, which is basically us">
+<meta name="keywords" content="BigData,DeepLearning,MachineLearning">
 <meta property="og:type" content="article">
-<meta property="og:title" content="UI Composition for Services">
-<meta property="og:url" content="http://www.serrate.net/2012/08/22/ui-composition-for-services/index.html">
+<meta property="og:title" content="Logistic Regression for Deep Learning (I)">
+<meta property="og:url" content="http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning-part-i/index.html">
 <meta property="og:site_name" content="Marçal Serrate">
-<meta property="og:description" content="One of the most important concepts when applying either SOA or DDD is the definition of Services (or Bounded Contexts in the DDD lingo). Each of these services will be responsible for its own data and">
+<meta property="og:description" content="In this post we’re going to cover some basic intuition to work on logistic regression for Deep Learning algorithms. Logistic regression is an algorithm for binary classification, which is basically us">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://www.serrate.net/files/2012/08/uicomposition.jpg">
-<meta property="og:updated_time" content="2017-07-02T17:16:48.000Z">
+<meta property="og:image" content="http://www.serrate.net/files/2018/01/sigmoid.png">
+<meta property="og:updated_time" content="2018-01-31T21:10:26.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="UI Composition for Services">
-<meta name="twitter:description" content="One of the most important concepts when applying either SOA or DDD is the definition of Services (or Bounded Contexts in the DDD lingo). Each of these services will be responsible for its own data and">
-<meta name="twitter:image" content="http://www.serrate.net/files/2012/08/uicomposition.jpg">
+<meta name="twitter:title" content="Logistic Regression for Deep Learning (I)">
+<meta name="twitter:description" content="In this post we’re going to cover some basic intuition to work on logistic regression for Deep Learning algorithms. Logistic regression is an algorithm for binary classification, which is basically us">
+<meta name="twitter:image" content="http://www.serrate.net/files/2018/01/sigmoid.png">
     
 
     
@@ -147,23 +147,15 @@ ga('send', 'pageview');
 
         <div class="outer">
             
-            <section id="main"><article id="post-ui-composition-for-services" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-logistic-regression-for-deep-learning-part-i" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
-        
-            
-	
-		<img src="/files/2012/08/uicomposition.jpg" class="article-banner" />
-	
-
-
-
         
         
             <header class="article-header">
                 
     
         <h1 class="article-title" itemprop="name">
-            UI Composition for Services
+            Logistic Regression for Deep Learning (I)
         </h1>
     
 
@@ -172,8 +164,8 @@ ga('send', 'pageview');
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2012/08/22/ui-composition-for-services/">
-            <time datetime="2012-08-22T07:22:49.000Z" itemprop="datePublished">2012-08-22</time>
+        <a href="/2018/01/16/logistic-regression-for-deep-learning-part-i/">
+            <time datetime="2018-01-15T23:00:00.000Z" itemprop="datePublished">2018-01-16</time>
         </a>
     </div>
 
@@ -181,13 +173,13 @@ ga('send', 'pageview');
                         
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
+        <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>
     </div>
 
                         
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/DDD/">DDD</a>, <a class="tag-link" href="/tags/SOA/">SOA</a>
+        <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/DeepLearning/">DeepLearning</a>, <a class="tag-link" href="/tags/MachineLearning/">MachineLearning</a>
     </div>
 
                     </div>
@@ -198,27 +190,39 @@ ga('send', 'pageview');
         <div class="article-entry" itemprop="articleBody">
         
             
-            <p>One of the most important concepts when applying either <strong>SOA</strong> or <strong>DDD</strong> is the definition of Services (or Bounded Contexts in the DDD lingo).</p>
-<p>Each of these services will be responsible for its own <strong>data and behavior</strong> and could also own the UI components of that service.</p>
-<p>Let’s see an example with the typical Ecommerce domain:</p>
-<img src="/files/2012/08/Services.png" class="border" width="420" height="258" title="Services">
-<a id="more"></a>
-<p>In this case we have two services, Sales &amp; Shipping, and each of them owns its UI components that will be rendered by the UI host. That&#8217;s the result:</p>
-<img src="/files/2012/08/uicomposition.png" class="border" width="500" height="468" title="Ecommerce composition">
-<h2 id="Composition-with-ASP-NET-MVC"><a href="#Composition-with-ASP-NET-MVC" class="headerlink" title="Composition with ASP.NET MVC"></a>Composition with ASP.NET MVC</h2><p>In this example, I&#8217;m using <a href="http://razorgenerator.codeplex.com/" target="_blank">Razor Generator</a> in order to let services to have their own MVC components in class libraries, which will be referenced by the central UI host:</p>
-<img src="/files/2012/08/VSSolution.png" class="border" width="321" height="596" title="VS solution">
-<p>The use of Razor Generator is very straightforward:</p>
-<ol>
-<li>Install RazorGenerator from VS gallery</li>
-<li>On each class library, install RazorGenerator.Mvc from Nuget</li>
-<li>Create the folder structure following MVC conventions (Controllers, Views, etc.)</li>
-<li>Add a <a href="https://github.com/mserrate/ui-composition/blob/master/UIComposition/Serrate.Sales.UI/Web.config" target="_blank">web.config</a> to get intellisense for your views</li>
-<li>Change &#8220;Custom Tool&#8221; to RazorGenerator on your views in order to precompile it</li>
-</ol>
-<p>Then, decorate your actions as ChildActionOnly to behave like a widget:</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">FinishOrderController</span> : <span class="title">Controller</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">readonly</span> IBus bus;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">FinishOrderController</span>(<span class="params">IBus bus</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.bus = bus;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	[<span class="meta">ChildActionOnly</span>]</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ActionResult <span class="title">SubmitOrCancel</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		ViewBag.OrderId = TheSession.OrderId;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> PartialView();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	[<span class="meta">HttpPost</span>]</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ActionResult <span class="title">SubmitOrder</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> cmd = <span class="keyword">new</span> SubmitOrder()</span><br><span class="line">		&#123;</span><br><span class="line">			OrderId = TheSession.OrderId</span><br><span class="line">		&#125;;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">this</span>.bus.Send(cmd);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> RedirectToAction(<span class="string">"Processed"</span>, <span class="string">"Order"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	[<span class="meta">HttpPost</span>]</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ActionResult <span class="title">CancelOrder</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> cmd = <span class="keyword">new</span> CancelOrder()</span><br><span class="line">		&#123;</span><br><span class="line">			OrderId = TheSession.OrderId</span><br><span class="line">		&#125;;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">this</span>.bus.Send(cmd);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> RedirectToAction(<span class="string">"Cancelled"</span>, <span class="string">"Order"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Take a look at the sample on github and let me know!!</p>
-<p><a href="https://github.com/mserrate/ui-composition/tree/master/UIComposition" target="_blank" rel="noopener">https://github.com/mserrate/ui-composition/tree/master/UIComposition</a></p>
+            <p>In this post we’re going to cover some basic intuition to work on <em>logistic regression</em> for Deep Learning algorithms.</p>
+<p>Logistic regression is an algorithm for <strong>binary classification</strong>, which is basically used when you want to have your model to return 0 or 1. Some examples: is this image a cat? is this email spam? etc.</p>
+<p>The basic equation is:<br>$$<br>\begin{align}<br>   \hat{y} = w^T x + b \label{basic}<br>\end{align}<br>$$</p>
+<p>where:</p>
+<ul>
+<li>$\mathbf{\hat{y}}$: is the value that our model predicts</li>
+<li>$\mathbf{w \in \mathbb{R}^n}$: is a vector of $\mathbf{n}$ parameters representing the <strong>weights</strong>.</li>
+<li>$\mathbf{x \in \mathbb{R}^n}$: is a vector of $\mathbf{n}$ parameters representing the <strong>features</strong>.</li>
+<li>$\mathbf{b \in \mathbb{R}}$: is a scalar representing the <em>bias</em> or <em>intercept</em> term</li>
+</ul>
+<p>$\mathbf{w}$ and $\mathbf{b}$ are the parameters that control the behavior of the model. We can think of $\mathbf{w}$ as the weights that determine how each <strong>feature</strong> $\mathbf{x_i}$ affects the prediction.</p>
+<p>The objective of the machine learning algorithm is to learn the parameters $\mathbf{w}$ and $\mathbf{b}$ so $\mathbf{\hat{y}}$ becomes a good estimate of the chance of being $\mathbf{y}$</p>
+<h2 id="Activation-function-Sigmoid"><a href="#Activation-function-Sigmoid" class="headerlink" title="Activation function: Sigmoid"></a>Activation function: Sigmoid</h2><p>The output of the equation ($\ref{basic}$) is a linear function. So, how we transform this linear regression result to a non-linear result? The answer is the <strong>sigmoid function</strong> that transforms our input to a binary output:</p>
+<p>$$<br>\begin{align}<br>   \hat{y} = \sigma(w^T x + b)<br>\end{align}<br>$$</p>
+<p>where </p>
+<p>$$<br>\begin{align}<br>   \sigma(z)  = \frac{1}{1 + e^{-z}}<br>\end{align}<br>$$</p>
+<p>The sigmoid function can be represented as:</p>
+<img src="/files/2018/01/sigmoid.png">
+<p>As you can see this activation function allows us to map results to 0 or 1 given:</p>
+<ul>
+<li>For larger positive values of $\mathbf{z}$ we will have a $\mathbf{\sigma(z)}$ near <strong>1</strong></li>
+<li>For larger negative values of $\mathbf{z}$ we will have a $\mathbf{\sigma(z)}$ near <strong>0</strong> </li>
+</ul>
+<h2 id="Cost-Function"><a href="#Cost-Function" class="headerlink" title="Cost Function"></a>Cost Function</h2><p>First of all, we have the <strong>loss function</strong> which is used by one training example:<br>$$<br>\begin{align}<br>  \mathcal{L}(\hat{y}, y) = - \bigl(y\log\hat{y} + (1 - y) \log(1 - \hat{y})\bigr)<br>\end{align}<br>$$</p>
+<p>And the <strong>cost function</strong> measures how you are performing for the entire training set:<br>$$<br>\begin{align}<br>  \mathcal{J}(w, b) = \frac1m \sum_{i=1}^m \mathcal{L}(\hat{y}^{(i)}, y^{(i)})<br>\end{align}<br>$$</p>
+<p>As we want to improve as much as possible the performance, we are going to try to find the w &amp; b  values that minimizes this cost function. And that, is basically what <strong>gradient descent</strong> does for us.</p>
+<h2 id="Gradient-descent"><a href="#Gradient-descent" class="headerlink" title="Gradient descent"></a>Gradient descent</h2><p>Gradient descent is one of the most popuar optimization methods for neural networks for its simplicity (although it can have convergence problems due local minimums). Other optimization methods are: <a href="https://arxiv.org/abs/1412.6980" target="_blank" rel="noopener">Adam</a> or RMSprop.<br>The basic idea on gradient descent is that on each iteration (determined by the <em>slope</em> or derivative $\partial$), the <strong>weights</strong> are updated incrementally using a <em>learning rate</em> $\alpha$.</p>
+<p>A visual interpretation of <strong>gradient descent</strong> is the following:</p>
+<img src="/files/2018/01/gradient.png" width="450" height="243" title="Gradient descent" alt="Gradient descent <br />Source: <a href=https://sebastianraschka.com/faq/docs/closed-form-vs-gd.html>sebastianraschka.com</a>">
+<p>Given our cost function $\mathcal{J}(w, b)$, weights and bias are updated with the following formula:</p>
+<p>$$<br>\begin{align}<br>  w = w - \alpha\,\frac{\partial\,\mathcal{J}(w, b)}{\partial w}<br>\end{align}<br>$$<br>$$<br>\begin{align}<br>  b = b - \alpha\,\frac{\partial\,\mathcal{J}(w, b)}{\partial b}<br>\end{align}<br>$$</p>
+<p>where the symbol $\partial$ in $\partial\,\mathcal{J}(w, b)$ basically means the <strong>derivative</strong> of the cost function.</p>
+<p>In the next post, we will see how apply this theory to a practical example with <strong>python</strong>.</p>
 
         
         </div>
@@ -229,7 +233,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2012/08/22/ui-composition-for-services/" data-id="cjd3kk8nr00017u810bm3q5r8" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning-part-i/" data-id="cjd3kk8pp002h7u813q0rbpxa" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -297,7 +301,7 @@ ga('send', 'pageview');
 
             
     
-        <a href="http://www.serrate.net/2012/08/22/ui-composition-for-services/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2012/08/22/ui-composition-for-services/">Comments</a>
+        <a href="http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning-part-i/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning-part-i/">Comments</a>
     
 
         </footer>
@@ -306,19 +310,10 @@ ga('send', 'pageview');
         
 <nav id="article-nav">
     
-        <a href="/2012/08/27/cassandra-on-azure-centos-vm/" id="article-nav-newer" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">Newer</strong>
-            <div class="article-nav-title">
-                
-                    Cassandra on Azure CentOS VM
-                
-            </div>
-        </a>
     
-    
-        <a href="/2012/08/05/welcome-to-my-blog/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/2016/03/15/preview-of-kafka-streams/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">Older</strong>
-            <div class="article-nav-title">Welcome to my blog</div>
+            <div class="article-nav-title">Preview of Kafka Streams</div>
         </a>
     
 </nav>
@@ -518,9 +513,9 @@ ga('send', 'pageview');
     <script>
     var disqus_config = function () {
         
-            this.page.url = 'http://www.serrate.net/2012/08/22/ui-composition-for-services/';
+            this.page.url = 'http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning-part-i/';
         
-        this.page.identifier = 'ui-composition-for-services';
+        this.page.identifier = 'logistic-regression-for-deep-learning-part-i';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
