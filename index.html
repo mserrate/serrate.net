@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang=en>
 <head>
-    <meta charset="utf-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     
     <title>Marçal Serrate</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
@@ -9,6 +9,7 @@
 <meta property="og:title" content="Marçal Serrate">
 <meta property="og:url" content="http://www.serrate.net/index.html">
 <meta property="og:site_name" content="Marçal Serrate">
+<meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Marçal Serrate">
     
@@ -45,7 +46,7 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', 'UA-33815546-1', 'auto');
 ga('send', 'pageview');
 
-</script>
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
     
     
     
@@ -54,7 +55,7 @@ ga('send', 'pageview');
 </head>
 
 <body>
-    <div id="container">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
         <header id="header">
     <div id="header-main" class="header-inner">
         <div class="outer">
@@ -140,6 +141,170 @@ ga('send', 'pageview');
         <div class="outer">
             
             <section id="main">
+    <article id="post-logistic-regression-for-deep-learning" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/2018/01/16/logistic-regression-for-deep-learning/">Logistic Regression for Deep Learning (I)</a>
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2018/01/16/logistic-regression-for-deep-learning/">
+            <time datetime="2018-01-15T23:00:00.000Z" itemprop="datePublished">2018-01-16</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/DeepLearning/">DeepLearning</a>, <a class="tag-link" href="/tags/MachineLearning/">MachineLearning</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>In this post we’re going to cover some basic intuition to work on <em>logistic regression</em> for Deep Learning algorithms.</p>
+<p>Logistic regression is an algorithm for <strong>binary classification</strong>, which is basically used when you want to have your model to return 0 or 1. Some examples: is this image a cat? is this email spam? etc.</p>
+<p>The basic equation is:<br>$$<br>\begin{align}<br>   \hat{y} = w^T x + b \label{basic}<br>\end{align}<br>$$</p>
+<p>where:</p>
+<ul>
+<li>$\mathbf{\hat{y}}$: is the value that our model predicts</li>
+<li>$\mathbf{w \in \mathbb{R}^n}$: is a vector of $\mathbf{n}$ parameters representing the <strong>weights</strong>.</li>
+<li>$\mathbf{x \in \mathbb{R}^n}$: is a vector of $\mathbf{n}$ parameters representing the <strong>features</strong>.</li>
+<li>$\mathbf{b \in \mathbb{R}}$: is a scalar representing the <em>bias</em> or <em>intercept</em> term</li>
+</ul>
+<p>$\mathbf{w}$ and $\mathbf{b}$ are the parameters that control the behavior of the model. We can think of $\mathbf{w}$ as the weights that determine how each <strong>feature</strong> $\mathbf{x_i}$ affects the prediction.</p>
+<p>The objective of the machine learning algorithm is to learn the parameters $\mathbf{w}$ and $\mathbf{b}$ so $\mathbf{\hat{y}}$ becomes a good estimate of the chance of being $\mathbf{y}$</p>
+<h2 id="Activation-function-Sigmoid"><a href="#Activation-function-Sigmoid" class="headerlink" title="Activation function: Sigmoid"></a>Activation function: Sigmoid</h2><p>The output of the equation ($\ref{basic}$) is a linear function. So, how we transform this linear regression result to a non-linear result? The answer is the <strong>sigmoid function</strong> that transforms our input to a binary output:</p>
+<p>$$<br>\begin{align}<br>   \hat{y} = \sigma(w^T x + b)<br>\end{align}<br>$$</p>
+<p>where </p>
+<p>$$<br>\begin{align}<br>   \sigma(z)  = \frac{1}{1 + e^{-z}}<br>\end{align}<br>$$</p>
+<p>The sigmoid function can be represented as:</p>
+<img src="/files/2018/01/sigmoid.png">
+<p>As you can see this activation function allows us to map results to 0 or 1 given:</p>
+<ul>
+<li>For larger positive values of $\mathbf{z}$ we will have a $\mathbf{\sigma(z)}$ near <strong>1</strong></li>
+<li>For larger negative values of $\mathbf{z}$ we will have a $\mathbf{\sigma(z)}$ near <strong>0</strong> </li>
+</ul>
+<h2 id="Cost-Function"><a href="#Cost-Function" class="headerlink" title="Cost Function"></a>Cost Function</h2><p>First of all, we have the <strong>loss function</strong> which is used by one training example:<br>$$<br>\begin{align}<br>  \mathcal{L}(\hat{y}, y) = - \bigl(y\log\hat{y} + (1 - y) \log(1 - \hat{y})\bigr)<br>\end{align}<br>$$</p>
+<p>And the <strong>cost function</strong> measures how you are performing for the entire training set:<br>$$<br>\begin{align}<br>  \mathcal{J}(w, b) = \frac1m \sum_{i=1}^m \mathcal{L}(\hat{y}^{(i)}, y^{(i)})<br>\end{align}<br>$$</p>
+<p>As we want to improve as much as possible the performance, we are going to try to find the w &amp; b  values that minimizes this cost function. And that, is basically what <strong>gradient descent</strong> does for us.</p>
+<h2 id="Gradient-descent"><a href="#Gradient-descent" class="headerlink" title="Gradient descent"></a>Gradient descent</h2><p>Gradient descent is one of the most popuar optimization methods for neural networks for its simplicity (although it can have convergence problems due local minimums). Other optimization methods are: <a href="https://arxiv.org/abs/1412.6980" target="_blank" rel="noopener">Adam</a> or RMSprop.<br>The basic idea on gradient descent is that on each iteration (determined by the <em>slope</em> or derivative $\partial$), the <strong>weights</strong> are updated incrementally using a <em>learning rate</em> $\alpha$.</p>
+<p>A visual interpretation of <strong>gradient descent</strong> is the following:</p>
+<img src="/files/2018/01/gradient.png" width="450" height="243" title="Gradient descent" alt="Gradient descent <br />Source: <a href=https://sebastianraschka.com/faq/docs/closed-form-vs-gd.html>sebastianraschka.com</a>">
+<p>Given our cost function $\mathcal{J}(w, b)$, weights and bias are updated with the following formula:</p>
+<p>$$<br>\begin{align}<br>  w = w - \alpha\,\frac{\partial\,\mathcal{J}(w, b)}{\partial w}<br>\end{align}<br>$$<br>$$<br>\begin{align}<br>  b = b - \alpha\,\frac{\partial\,\mathcal{J}(w, b)}{\partial b}<br>\end{align}<br>$$</p>
+<p>where the symbol $\partial$ in $\partial\,\mathcal{J}(w, b)$ basically means the <strong>derivative</strong> of the cost function.</p>
+<p>In the next post, we will see how apply this theory to a practical example with <strong>python</strong>.</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning/" data-id="cjci3jqcc000uz18164h4q2b5" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+</article>
+
+
+
     <article id="post-preview-of-kafka-streams" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
@@ -191,7 +356,7 @@ ga('send', 'pageview');
 <p>That isn&#8217;t a new concept if you come from the <strong><a href="http://www.serrate.net/2015/02/17/speaking-at-dotnetspain-conference/" target="_blank">Event Sourcing</a></strong> world: the KStream is the append-only event store where its state is given by replaying the events from the beginning of time until the last event whereas KTable is the snapshot or projection of the current state of the stream given a point in time.</p>
 <h3 id="Example-Twitter-Hashtags-Job"><a href="#Example-Twitter-Hashtags-Job" class="headerlink" title="Example: Twitter Hashtags Job"></a>Example: Twitter Hashtags Job</h3><img src="/files/2016/03/KafkaStreams-2.png" width="749" height="303" title="Kafka Streams" alt="Kafka Streams: KStream and KTable">
 <h3 id="Show-me-the-code"><a href="#Show-me-the-code" class="headerlink" title="Show me the code!"></a>Show me the code!</h3><p>You can find the complete example here: <a href="https://github.com/mserrate/kafka-streams-app" target="_blank">https://github.com/mserrate/kafka-streams-app</a></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">KStream&lt;String, JsonNode&gt; source = builder.stream(stringDeserializer, jsonDeserializer, <span class="string">"streams-hashtag-input"</span>);</div><div class="line"></div><div class="line">KTable&lt;String, Long&gt; counts = source</div><div class="line">        .filter(<span class="keyword">new</span> HashtagFilter())</div><div class="line">        .flatMapValues(<span class="keyword">new</span> HashtagSplitter())</div><div class="line">        .map(<span class="keyword">new</span> HashtagMapper())</div><div class="line">        .countByKey(stringSerializer, longSerializer, stringDeserializer, longDeserializer, <span class="string">"Counts"</span>);</div><div class="line"></div><div class="line">counts.to(<span class="string">"streams-hashtag-count-output"</span>, stringSerializer, longSerializer);</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">KStream&lt;String, JsonNode&gt; source = builder.stream(stringDeserializer, jsonDeserializer, <span class="string">"streams-hashtag-input"</span>);</span><br><span class="line"></span><br><span class="line">KTable&lt;String, Long&gt; counts = source</span><br><span class="line">        .filter(<span class="keyword">new</span> HashtagFilter())</span><br><span class="line">        .flatMapValues(<span class="keyword">new</span> HashtagSplitter())</span><br><span class="line">        .map(<span class="keyword">new</span> HashtagMapper())</span><br><span class="line">        .countByKey(stringSerializer, longSerializer, stringDeserializer, longDeserializer, <span class="string">"Counts"</span>);</span><br><span class="line"></span><br><span class="line">counts.to(<span class="string">"streams-hashtag-count-output"</span>, stringSerializer, longSerializer);</span><br></pre></td></tr></table></figure>
 <p>For this example I&#8217;ve been using a simple TweetProducer who connects to the <strong>Twitter Streaming API</strong> and sends JSON events to a Kafka topic.</p>
 <p>This topic is read as a KStream and then we begin the process:</p>
 <ol>
@@ -212,7 +377,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2016/03/15/preview-of-kafka-streams/" data-id="cj4d2ji5a000qgc817xywor6l" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2016/03/15/preview-of-kafka-streams/" data-id="cjci3jqc8000pz181vjwqbftj" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -335,7 +500,7 @@ ga('send', 'pageview');
             <p><p>In the previous <a href="http://www.serrate.net/2016/01/05/analysis-of-twitter-streams-with-kafka-and-storm/" target="_blank">post</a> I have presented an overview of the topology used to analyse twitter streams with <strong>Kafka</strong> and <strong>Storm</strong>. Now it&#8217;s time to cover the technical details of the twitter topology.</p>
 <h3 id="Twitter-Topology"><a href="#Twitter-Topology" class="headerlink" title="Twitter Topology"></a>Twitter Topology</h3><img src="/files/2016/02/TwitterTopology_Analysis.png" width="550" height="254" title="Twitter Streaming" alt="Twitter Streaming">
 <p>The declaration of the storm topology using KafkaSpout to read the tweets from a kafka queue:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwitterProcessorTopology</span> <span class="keyword">extends</span> <span class="title">BaseTopology</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TwitterProcessorTopology</span><span class="params">(String configFileLocation)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">super</span>(configFileLocation);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">configureKafkaSpout</span><span class="params">(TopologyBuilder topology)</span> </span>&#123;</div><div class="line">        BrokerHosts hosts = <span class="keyword">new</span> ZkHosts(topologyConfig.getProperty(<span class="string">"zookeeper.host"</span>));</div><div class="line"></div><div class="line">        SpoutConfig spoutConfig = <span class="keyword">new</span> SpoutConfig(</div><div class="line">                hosts,</div><div class="line">                topologyConfig.getProperty(<span class="string">"kafka.twitter.raw.topic"</span>),</div><div class="line">                topologyConfig.getProperty(<span class="string">"kafka.zkRoot"</span>),</div><div class="line">                topologyConfig.getProperty(<span class="string">"kafka.consumer.group"</span>));</div><div class="line">        spoutConfig.scheme= <span class="keyword">new</span> SchemeAsMultiScheme(<span class="keyword">new</span> StringScheme());</div><div class="line"></div><div class="line">        KafkaSpout kafkaSpout= <span class="keyword">new</span> KafkaSpout(spoutConfig);</div><div class="line">        topology.setSpout(<span class="string">"twitterSpout"</span>, kafkaSpout);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">configureBolts</span><span class="params">(TopologyBuilder topology)</span> </span>&#123;</div><div class="line">        <span class="comment">// filtering</span></div><div class="line">        topology.setBolt(<span class="string">"twitterFilter"</span>, <span class="keyword">new</span> TwitterFilterBolt(), <span class="number">4</span>)</div><div class="line">                .shuffleGrouping(<span class="string">"twitterSpout"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// sanitization</span></div><div class="line">        topology.setBolt(<span class="string">"textSanitization"</span>, <span class="keyword">new</span> TextSanitizationBolt(), <span class="number">4</span>)</div><div class="line">                .shuffleGrouping(<span class="string">"twitterFilter"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// sentiment analysis</span></div><div class="line">        topology.setBolt(<span class="string">"sentimentAnalysis"</span>, <span class="keyword">new</span> SentimentAnalysisBolt(), <span class="number">4</span>)</div><div class="line">                .shuffleGrouping(<span class="string">"textSanitization"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// persist tweets with analysis to Cassandra</span></div><div class="line">        topology.setBolt(<span class="string">"sentimentAnalysisToCassandra"</span>, <span class="keyword">new</span> SentimentAnalysisToCassandraBolt(topologyConfig), <span class="number">4</span>)</div><div class="line">                .shuffleGrouping(<span class="string">"sentimentAnalysis"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// divide sentiment by hashtag</span></div><div class="line">        topology.setBolt(<span class="string">"hashtagSplitter"</span>, <span class="keyword">new</span> HashtagSplitterBolt(), <span class="number">4</span>)</div><div class="line">                .shuffleGrouping(<span class="string">"textSanitization"</span>);</div><div class="line"></div><div class="line">        <span class="comment">// persist hashtags to Cassandra</span></div><div class="line">        topology.setBolt(<span class="string">"hashtagCounter"</span>, <span class="keyword">new</span> HashtagCounterBolt(), <span class="number">4</span>)</div><div class="line">                .fieldsGrouping(<span class="string">"hashtagSplitter"</span>, <span class="keyword">new</span> Fields(<span class="string">"tweet_hashtag"</span>));</div><div class="line"></div><div class="line">        topology.setBolt(<span class="string">"topHashtag"</span>, <span class="keyword">new</span> TopHashtagBolt())</div><div class="line">                .globalGrouping(<span class="string">"hashtagCounter"</span>);</div><div class="line"></div><div class="line">        topology.setBolt(<span class="string">"topHashtagToCassandra"</span>, <span class="keyword">new</span> TopHashtagToCassandraBolt(topologyConfig), <span class="number">4</span>)</div><div class="line">                .shuffleGrouping(<span class="string">"topHashtag"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">buildAndSubmit</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        TopologyBuilder builder = <span class="keyword">new</span> TopologyBuilder();</div><div class="line">        configureKafkaSpout(builder);</div><div class="line">        configureBolts(builder);</div><div class="line"></div><div class="line">        Config config = <span class="keyword">new</span> Config();</div><div class="line"></div><div class="line">        <span class="comment">//set producer properties</span></div><div class="line">        Properties props = <span class="keyword">new</span> Properties();</div><div class="line">        props.put(<span class="string">"metadata.broker.list"</span>, topologyConfig.getProperty(<span class="string">"kafka.broker.list"</span>));</div><div class="line">        props.put(<span class="string">"request.required.acks"</span>, <span class="string">"1"</span>);</div><div class="line">        props.put(<span class="string">"serializer.class"</span>, <span class="string">"kafka.serializer.StringEncoder"</span>);</div><div class="line">        config.put(KafkaBolt.KAFKA_BROKER_PROPERTIES, props);</div><div class="line"></div><div class="line">        StormSubmitter.submitTopology(<span class="string">"twitter-processor"</span>, config, builder.createTopology());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        String configFileLocation = args[<span class="number">0</span>];</div><div class="line"></div><div class="line">        TwitterProcessorTopology topology = <span class="keyword">new</span> TwitterProcessorTopology(configFileLocation);</div><div class="line">        topology.buildAndSubmit();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwitterProcessorTopology</span> <span class="keyword">extends</span> <span class="title">BaseTopology</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TwitterProcessorTopology</span><span class="params">(String configFileLocation)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(configFileLocation);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">configureKafkaSpout</span><span class="params">(TopologyBuilder topology)</span> </span>&#123;</span><br><span class="line">        BrokerHosts hosts = <span class="keyword">new</span> ZkHosts(topologyConfig.getProperty(<span class="string">"zookeeper.host"</span>));</span><br><span class="line"></span><br><span class="line">        SpoutConfig spoutConfig = <span class="keyword">new</span> SpoutConfig(</span><br><span class="line">                hosts,</span><br><span class="line">                topologyConfig.getProperty(<span class="string">"kafka.twitter.raw.topic"</span>),</span><br><span class="line">                topologyConfig.getProperty(<span class="string">"kafka.zkRoot"</span>),</span><br><span class="line">                topologyConfig.getProperty(<span class="string">"kafka.consumer.group"</span>));</span><br><span class="line">        spoutConfig.scheme= <span class="keyword">new</span> SchemeAsMultiScheme(<span class="keyword">new</span> StringScheme());</span><br><span class="line"></span><br><span class="line">        KafkaSpout kafkaSpout= <span class="keyword">new</span> KafkaSpout(spoutConfig);</span><br><span class="line">        topology.setSpout(<span class="string">"twitterSpout"</span>, kafkaSpout);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">configureBolts</span><span class="params">(TopologyBuilder topology)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// filtering</span></span><br><span class="line">        topology.setBolt(<span class="string">"twitterFilter"</span>, <span class="keyword">new</span> TwitterFilterBolt(), <span class="number">4</span>)</span><br><span class="line">                .shuffleGrouping(<span class="string">"twitterSpout"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// sanitization</span></span><br><span class="line">        topology.setBolt(<span class="string">"textSanitization"</span>, <span class="keyword">new</span> TextSanitizationBolt(), <span class="number">4</span>)</span><br><span class="line">                .shuffleGrouping(<span class="string">"twitterFilter"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// sentiment analysis</span></span><br><span class="line">        topology.setBolt(<span class="string">"sentimentAnalysis"</span>, <span class="keyword">new</span> SentimentAnalysisBolt(), <span class="number">4</span>)</span><br><span class="line">                .shuffleGrouping(<span class="string">"textSanitization"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// persist tweets with analysis to Cassandra</span></span><br><span class="line">        topology.setBolt(<span class="string">"sentimentAnalysisToCassandra"</span>, <span class="keyword">new</span> SentimentAnalysisToCassandraBolt(topologyConfig), <span class="number">4</span>)</span><br><span class="line">                .shuffleGrouping(<span class="string">"sentimentAnalysis"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// divide sentiment by hashtag</span></span><br><span class="line">        topology.setBolt(<span class="string">"hashtagSplitter"</span>, <span class="keyword">new</span> HashtagSplitterBolt(), <span class="number">4</span>)</span><br><span class="line">                .shuffleGrouping(<span class="string">"textSanitization"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// persist hashtags to Cassandra</span></span><br><span class="line">        topology.setBolt(<span class="string">"hashtagCounter"</span>, <span class="keyword">new</span> HashtagCounterBolt(), <span class="number">4</span>)</span><br><span class="line">                .fieldsGrouping(<span class="string">"hashtagSplitter"</span>, <span class="keyword">new</span> Fields(<span class="string">"tweet_hashtag"</span>));</span><br><span class="line"></span><br><span class="line">        topology.setBolt(<span class="string">"topHashtag"</span>, <span class="keyword">new</span> TopHashtagBolt())</span><br><span class="line">                .globalGrouping(<span class="string">"hashtagCounter"</span>);</span><br><span class="line"></span><br><span class="line">        topology.setBolt(<span class="string">"topHashtagToCassandra"</span>, <span class="keyword">new</span> TopHashtagToCassandraBolt(topologyConfig), <span class="number">4</span>)</span><br><span class="line">                .shuffleGrouping(<span class="string">"topHashtag"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">buildAndSubmit</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        TopologyBuilder builder = <span class="keyword">new</span> TopologyBuilder();</span><br><span class="line">        configureKafkaSpout(builder);</span><br><span class="line">        configureBolts(builder);</span><br><span class="line"></span><br><span class="line">        Config config = <span class="keyword">new</span> Config();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//set producer properties</span></span><br><span class="line">        Properties props = <span class="keyword">new</span> Properties();</span><br><span class="line">        props.put(<span class="string">"metadata.broker.list"</span>, topologyConfig.getProperty(<span class="string">"kafka.broker.list"</span>));</span><br><span class="line">        props.put(<span class="string">"request.required.acks"</span>, <span class="string">"1"</span>);</span><br><span class="line">        props.put(<span class="string">"serializer.class"</span>, <span class="string">"kafka.serializer.StringEncoder"</span>);</span><br><span class="line">        config.put(KafkaBolt.KAFKA_BROKER_PROPERTIES, props);</span><br><span class="line"></span><br><span class="line">        StormSubmitter.submitTopology(<span class="string">"twitter-processor"</span>, config, builder.createTopology());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        String configFileLocation = args[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">        TwitterProcessorTopology topology = <span class="keyword">new</span> TwitterProcessorTopology(configFileLocation);</span><br><span class="line">        topology.buildAndSubmit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
             <p class="article-more-link">
                 <a href="/2016/02/07/sentiment-analysis-of-tweets/#more">Read More</a>
             </p>
@@ -348,7 +513,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2016/02/07/sentiment-analysis-of-tweets/" data-id="cj4d2ji55000kgc81lxf2iiy5" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2016/02/07/sentiment-analysis-of-tweets/" data-id="cjci3jqc6000mz181qmtzfh3f" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -503,7 +668,7 @@ ga('send', 'pageview');
 </li>
 </ul>
 <h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3><p>In this post we have seen the benefits of using <strong>Apache Kafka</strong> &amp; <strong>Apache Storm</strong> to ingest and process streams of data, on next posts will look at the implementation details and will provide some analytical insight from the data stored in <strong>Cassandra</strong>.</p>
-<p>The sample can be found on Github: <a href="https://github.com/mserrate/twitter-streaming-app" target="_blank" rel="external">https://github.com/mserrate/twitter-streaming-app</a></p>
+<p>The sample can be found on Github: <a href="https://github.com/mserrate/twitter-streaming-app" target="_blank" rel="noopener">https://github.com/mserrate/twitter-streaming-app</a></p>
 
         
         </div>
@@ -514,7 +679,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2016/01/05/analysis-of-twitter-streams-with-kafka-and-storm/" data-id="cj4d2ji51000ggc81x05v7l0w" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2016/01/05/analysis-of-twitter-streams-with-kafka-and-storm/" data-id="cjci3jqc2000iz181ldattyck" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -669,7 +834,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2015/12/13/big-data-streams-and-lambdas/" data-id="cj4d2ji4z000fgc8190sd5sz3" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2015/12/13/big-data-streams-and-lambdas/" data-id="cjci3jqc0000hz181f0fh3j74" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -813,7 +978,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2015/02/17/speaking-at-dotnetspain-conference/" data-id="cj4d2ji4v000cgc81z38a7kvq" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2015/02/17/speaking-at-dotnetspain-conference/" data-id="cjci3jqbv000cz18114wl7kpc" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -947,7 +1112,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2012/11/05/webcast-about-soa-ddd-cqrs-with-nservicebus/" data-id="cj4d2ji4t000agc812o8oezgf" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2012/11/05/webcast-about-soa-ddd-cqrs-with-nservicebus/" data-id="cjci3jqbr0008z181lg2pzcko" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -1071,7 +1236,7 @@ ga('send', 'pageview');
             <p>Many times when working with NServiceBus in <a href="http://nservicebus.com/docs/Samples/UnobtrusiveModeSample.aspx" target="_blank">unobtrusive mode</a> you may feel that you are repeating the same conventions over and over again on all the endpoints.</p>
 <p>The <strong>IWantToRunBeforeConfiguration</strong> interface is a great help in order to embrace the DRY principle.</p>
 <p>Just define your implementation in an assembly referenced by all the endpoints:</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UnobtrusiveConventions</span> : <span class="title">IWantToRunBeforeConfiguration</span></div><div class="line">&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Init</span>(<span class="params"></span>)</span></div><div class="line">    &#123;</div><div class="line">        Configure.Instance</div><div class="line">            .DefiningCommandsAs(t =&gt; t.Namespace != <span class="literal">null</span></div><div class="line">                &amp;&amp; t.Namespace.EndsWith(<span class="string">"Commands"</span>))</div><div class="line">            .DefiningEventsAs(t =&gt;; t.Namespace != <span class="literal">null</span></div><div class="line">                &amp;&amp; t.Namespace.EndsWith(<span class="string">"Events"</span>))</div><div class="line">            .DefiningMessagesAs(t =&gt; t.Namespace != <span class="literal">null</span></div><div class="line">                &amp;&amp; t.Namespace.EndsWith(<span class="string">"Messages"</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UnobtrusiveConventions</span> : <span class="title">IWantToRunBeforeConfiguration</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Init</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Configure.Instance</span><br><span class="line">            .DefiningCommandsAs(t =&gt; t.Namespace != <span class="literal">null</span></span><br><span class="line">                &amp;&amp; t.Namespace.EndsWith(<span class="string">"Commands"</span>))</span><br><span class="line">            .DefiningEventsAs(t =&gt;; t.Namespace != <span class="literal">null</span></span><br><span class="line">                &amp;&amp; t.Namespace.EndsWith(<span class="string">"Events"</span>))</span><br><span class="line">            .DefiningMessagesAs(t =&gt; t.Namespace != <span class="literal">null</span></span><br><span class="line">                &amp;&amp; t.Namespace.EndsWith(<span class="string">"Messages"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>and NServiceBus will pick this class automatically for each endpoint.</p>
 
         
@@ -1083,7 +1248,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/" data-id="cj4d2ji4r0006gc813ln2c5t5" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/" data-id="cjci3jqby000dz1816ucksg0p" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -1220,7 +1385,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2012/09/11/nservicebus-training/" data-id="cj4d2ji4q0005gc818a1q7j8c" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2012/09/11/nservicebus-training/" data-id="cjci3jqbp0007z181tx8548lr" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -1366,7 +1531,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2012/08/27/cassandra-on-azure-centos-vm/" data-id="cj4d2ji4o0004gc81iozuk93r" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2012/08/27/cassandra-on-azure-centos-vm/" data-id="cjci3jqbm0006z181awrr2439" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -1444,152 +1609,6 @@ ga('send', 'pageview');
 
 
 
-    <article id="post-ui-composition-for-services" class="article article-type-post" itemscope itemprop="blogPost">
-    <div class="article-inner">
-        
-            
-	
-		<a href="/2012/08/22/ui-composition-for-services/" itemprop="url">
-            <img src="/files/2012/08/uicomposition.jpg" class="article-banner" />
-        </a>
-	
-
-
-
-        
-        
-            <header class="article-header">
-                
-    
-        <h1 itemprop="name">
-            <a class="article-title" href="/2012/08/22/ui-composition-for-services/">UI Composition for Services</a>
-        </h1>
-    
-
-                
-                    <div class="article-meta">
-                        
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2012/08/22/ui-composition-for-services/">
-            <time datetime="2012-08-22T07:22:49.000Z" itemprop="datePublished">2012-08-22</time>
-        </a>
-    </div>
-
-
-                        
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
-    </div>
-
-                        
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/DDD/">DDD</a>, <a class="tag-link" href="/tags/SOA/">SOA</a>
-    </div>
-
-                    </div>
-                
-            </header>
-        
-        
-        <div class="article-entry" itemprop="articleBody">
-        
-            <p><p>One of the most important concepts when applying either <strong>SOA</strong> or <strong>DDD</strong> is the definition of Services (or Bounded Contexts in the DDD lingo).</p>
-<p>Each of these services will be responsible for its own <strong>data and behavior</strong> and could also own the UI components of that service.</p>
-<p>Let’s see an example with the typical Ecommerce domain:</p>
-<img src="/files/2012/08/Services.png" class="border" width="420" height="258" title="Services"></p>
-            <p class="article-more-link">
-                <a href="/2012/08/22/ui-composition-for-services/#more">Read More</a>
-            </p>
-        
-        </div>
-        <footer class="article-footer">
-            <div class="share-container">
-
-
-
-</div>
-
-    <a data-url="http://www.serrate.net/2012/08/22/ui-composition-for-services/" data-id="cj4d2ji4h0001gc8125dormyo" class="article-share-link"><i class="fa fa-share"></i>Share</a>
-<script>
-    (function ($) {
-        // Prevent duplicate binding
-        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
-            __SHARE_BUTTON_BINDED__ = true;
-        } else {
-            return;
-        }
-        $('body').on('click', function() {
-            $('.article-share-box.on').removeClass('on');
-        }).on('click', '.article-share-link', function(e) {
-            e.stopPropagation();
-
-            var $this = $(this),
-                url = $this.attr('data-url'),
-                encodedUrl = encodeURIComponent(url),
-                id = 'article-share-box-' + $this.attr('data-id'),
-                offset = $this.offset(),
-                box;
-
-            if ($('#' + id).length) {
-                box = $('#' + id);
-
-                if (box.hasClass('on')){
-                    box.removeClass('on');
-                    return;
-                }
-            } else {
-                var html = [
-                    '<div id="' + id + '" class="article-share-box">',
-                        '<input class="article-share-input" value="' + url + '">',
-                        '<div class="article-share-links">',
-                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
-                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
-                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
-                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
-                        '</div>',
-                    '</div>'
-                ].join('');
-
-              box = $(html);
-
-              $('body').append(box);
-            }
-
-            $('.article-share-box.on').hide();
-
-            box.css({
-                top: offset.top + 25,
-                left: offset.left
-            }).addClass('on');
-
-        }).on('click', '.article-share-box', function (e) {
-            e.stopPropagation();
-        }).on('click', '.article-share-box-input', function () {
-            $(this).select();
-        }).on('click', '.article-share-box-link', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
-        });
-    })(jQuery);
-</script>
-
-            
-    
-        <a href="http://www.serrate.net/2012/08/22/ui-composition-for-services/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2012/08/22/ui-composition-for-services/">Comments</a>
-    
-
-        </footer>
-    </div>
-    
-</article>
-
-
-
     <nav id="page-nav">
         <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
@@ -1603,6 +1622,25 @@ ga('send', 'pageview');
         <h3 class="widget-title">recent</h3>
         <div class="widget">
             <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/01/16/logistic-regression-for-deep-learning/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2018/01/sigmoid.png)" alt="Logistic Regression for Deep Learning (I)" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a></p>
+                            <p class="item-title"><a href="/2018/01/16/logistic-regression-for-deep-learning/" class="title">Logistic Regression for Deep Learning (I)</a></p>
+                            <p class="item-date"><time datetime="2018-01-15T23:00:00.000Z" itemprop="datePublished">2018-01-16</time></p>
+                        </div>
+                    </li>
                 
                     <li>
                         
@@ -1680,25 +1718,6 @@ ga('send', 'pageview');
                         </div>
                     </li>
                 
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/2015/02/17/speaking-at-dotnetspain-conference/" class="thumbnail">
-    
-    
-        <span style="background-image:url(/files/2015/02/unnamed.jpg)" alt="Speaking at DotNetSpain conference" class="thumbnail-image"></span>
-    
-</a>
-
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
-                            <p class="item-title"><a href="/2015/02/17/speaking-at-dotnetspain-conference/" class="title">Speaking at DotNetSpain conference</a></p>
-                            <p class="item-date"><time datetime="2015-02-17T17:36:13.000Z" itemprop="datePublished">2015-02-17</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -1708,7 +1727,7 @@ ga('send', 'pageview');
     <div class="widget-wrap">
         <h3 class="widget-title">categories</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/NServiceBus/">NServiceBus</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NoSQL/">NoSQL</a><span class="category-list-count">1</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/NServiceBus/">NServiceBus</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Machine-Learning/">Machine Learning</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NoSQL/">NoSQL</a><span class="category-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -1717,7 +1736,7 @@ ga('send', 'pageview');
     <div class="widget-wrap">
         <h3 class="widget-title">archives</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">November 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">October 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">September 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">August 2012</a><span class="archive-list-count">3</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">November 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">October 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">September 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">August 2012</a><span class="archive-list-count">3</span></li></ul>
         </div>
     </div>
 
@@ -1726,7 +1745,7 @@ ga('send', 'pageview');
     <div class="widget-wrap">
         <h3 class="widget-title">tags</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Azure/">Azure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BigData/">BigData</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CQRS/">CQRS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cassandra/">Cassandra</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/">DDD</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventStore/">EventStore</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Misc/">Misc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NServiceBus/">NServiceBus</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/">NoSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOA/">SOA</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Storm/">Storm</a><span class="tag-list-count">3</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Azure/">Azure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BigData/">BigData</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CQRS/">CQRS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cassandra/">Cassandra</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/">DDD</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DeepLearning/">DeepLearning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventStore/">EventStore</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MachineLearning/">MachineLearning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Misc/">Misc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NServiceBus/">NServiceBus</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/">NoSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOA/">SOA</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Storm/">Storm</a><span class="tag-list-count">3</span></li></ul>
         </div>
     </div>
 
@@ -1735,7 +1754,7 @@ ga('send', 'pageview');
     <div class="widget-wrap">
         <h3 class="widget-title">tag cloud</h3>
         <div class="widget tagcloud">
-            <a href="/tags/Azure/" style="font-size: 10px;">Azure</a> <a href="/tags/BigData/" style="font-size: 20px;">BigData</a> <a href="/tags/CQRS/" style="font-size: 15px;">CQRS</a> <a href="/tags/Cassandra/" style="font-size: 12.5px;">Cassandra</a> <a href="/tags/DDD/" style="font-size: 15px;">DDD</a> <a href="/tags/EventStore/" style="font-size: 10px;">EventStore</a> <a href="/tags/Kafka/" style="font-size: 12.5px;">Kafka</a> <a href="/tags/Misc/" style="font-size: 10px;">Misc</a> <a href="/tags/NServiceBus/" style="font-size: 15px;">NServiceBus</a> <a href="/tags/NoSQL/" style="font-size: 10px;">NoSQL</a> <a href="/tags/SOA/" style="font-size: 17.5px;">SOA</a> <a href="/tags/Storm/" style="font-size: 15px;">Storm</a>
+            <a href="/tags/Azure/" style="font-size: 10px;">Azure</a> <a href="/tags/BigData/" style="font-size: 20px;">BigData</a> <a href="/tags/CQRS/" style="font-size: 15px;">CQRS</a> <a href="/tags/Cassandra/" style="font-size: 12.5px;">Cassandra</a> <a href="/tags/DDD/" style="font-size: 15px;">DDD</a> <a href="/tags/DeepLearning/" style="font-size: 10px;">DeepLearning</a> <a href="/tags/EventStore/" style="font-size: 10px;">EventStore</a> <a href="/tags/Kafka/" style="font-size: 12.5px;">Kafka</a> <a href="/tags/MachineLearning/" style="font-size: 10px;">MachineLearning</a> <a href="/tags/Misc/" style="font-size: 10px;">Misc</a> <a href="/tags/NServiceBus/" style="font-size: 15px;">NServiceBus</a> <a href="/tags/NoSQL/" style="font-size: 10px;">NoSQL</a> <a href="/tags/SOA/" style="font-size: 17.5px;">SOA</a> <a href="/tags/Storm/" style="font-size: 15px;">Storm</a>
         </div>
     </div>
 
@@ -1764,7 +1783,7 @@ ga('send', 'pageview');
         <footer id="footer">
     <div class="outer">
         <div id="footer-info" class="inner">
-            &copy; 2017 Marçal Serrate<br>
+            &copy; 2018 Marçal Serrate<br>
             Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
         </div>
     </div>
@@ -1808,6 +1827,23 @@ ga('send', 'pageview');
 <!-- Custom Scripts -->
 <script src="/js/main.js"></script>
 
-    </div>
+    </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 </body>
 </html>

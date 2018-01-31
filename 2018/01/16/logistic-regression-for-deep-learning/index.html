@@ -3,15 +3,22 @@
 <head>
     <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     
-    <title>Archive: 2016 | Marçal Serrate</title>
+    <title>Logistic Regression for Deep Learning (I) | Marçal Serrate</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Marçal Serrate">
-<meta property="og:url" content="http://www.serrate.net/archives/2016/index.html">
+    <meta name="description" content="In this post we’re going to cover some basic intuition to work on logistic regression for Deep Learning algorithms. Logistic regression is an algorithm for binary classification, which is basically us">
+<meta name="keywords" content="BigData,DeepLearning,MachineLearning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Logistic Regression for Deep Learning (I)">
+<meta property="og:url" content="http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning/index.html">
 <meta property="og:site_name" content="Marçal Serrate">
+<meta property="og:description" content="In this post we’re going to cover some basic intuition to work on logistic regression for Deep Learning algorithms. Logistic regression is an algorithm for binary classification, which is basically us">
 <meta property="og:locale" content="en">
+<meta property="og:image" content="http://www.serrate.net/files/2018/01/sigmoid.png">
+<meta property="og:updated_time" content="2018-01-31T20:09:35.267Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Marçal Serrate">
+<meta name="twitter:title" content="Logistic Regression for Deep Learning (I)">
+<meta name="twitter:description" content="In this post we’re going to cover some basic intuition to work on logistic regression for Deep Learning algorithms. Logistic regression is an algorithm for binary classification, which is basically us">
+<meta name="twitter:image" content="http://www.serrate.net/files/2018/01/sigmoid.png">
     
 
     
@@ -140,122 +147,191 @@ ga('send', 'pageview');
 
         <div class="outer">
             
-            <section id="main"><div class="timeline timeline-wrap">
-    
-            <div class="timeline-row timeline-row-major">
-                <span class="node"><i class="fa fa-calendar"></i></span>
-                <h1 class="title">2016</h1>
-            </div>
+            <section id="main"><article id="post-logistic-regression-for-deep-learning" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
         
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+        
+            <header class="article-header">
                 
     
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2016/03/15/preview-of-kafka-streams/">Preview of Kafka Streams</a>
+        <h1 class="article-title" itemprop="name">
+            Logistic Regression for Deep Learning (I)
         </h1>
     
 
-                <div class="article-meta">
-                    
+                
+                    <div class="article-meta">
+                        
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2016/03/15/preview-of-kafka-streams/">
-            <time datetime="2016-03-15T01:02:29.000Z" itemprop="datePublished">2016-03-15</time>
+        <a href="/2018/01/16/logistic-regression-for-deep-learning/">
+            <time datetime="2018-01-15T23:00:00.000Z" itemprop="datePublished">2018-01-16</time>
         </a>
     </div>
 
 
-                    
+                        
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
+        <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>
     </div>
 
-                    
+                        
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/Kafka/">Kafka</a>, <a class="tag-link" href="/tags/Storm/">Storm</a>
+        <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/DeepLearning/">DeepLearning</a>, <a class="tag-link" href="/tags/MachineLearning/">MachineLearning</a>
     </div>
 
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+                    </div>
                 
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2016/02/07/sentiment-analysis-of-tweets/">Sentiment analysis of tweets</a>
-        </h1>
-    
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>In this post we’re going to cover some basic intuition to work on <em>logistic regression</em> for Deep Learning algorithms.</p>
+<p>Logistic regression is an algorithm for <strong>binary classification</strong>, which is basically used when you want to have your model to return 0 or 1. Some examples: is this image a cat? is this email spam? etc.</p>
+<p>The basic equation is:<br>$$<br>\begin{align}<br>   \hat{y} = w^T x + b \label{basic}<br>\end{align}<br>$$</p>
+<p>where:</p>
+<ul>
+<li>$\mathbf{\hat{y}}$: is the value that our model predicts</li>
+<li>$\mathbf{w \in \mathbb{R}^n}$: is a vector of $\mathbf{n}$ parameters representing the <strong>weights</strong>.</li>
+<li>$\mathbf{x \in \mathbb{R}^n}$: is a vector of $\mathbf{n}$ parameters representing the <strong>features</strong>.</li>
+<li>$\mathbf{b \in \mathbb{R}}$: is a scalar representing the <em>bias</em> or <em>intercept</em> term</li>
+</ul>
+<p>$\mathbf{w}$ and $\mathbf{b}$ are the parameters that control the behavior of the model. We can think of $\mathbf{w}$ as the weights that determine how each <strong>feature</strong> $\mathbf{x_i}$ affects the prediction.</p>
+<p>The objective of the machine learning algorithm is to learn the parameters $\mathbf{w}$ and $\mathbf{b}$ so $\mathbf{\hat{y}}$ becomes a good estimate of the chance of being $\mathbf{y}$</p>
+<h2 id="Activation-function-Sigmoid"><a href="#Activation-function-Sigmoid" class="headerlink" title="Activation function: Sigmoid"></a>Activation function: Sigmoid</h2><p>The output of the equation ($\ref{basic}$) is a linear function. So, how we transform this linear regression result to a non-linear result? The answer is the <strong>sigmoid function</strong> that transforms our input to a binary output:</p>
+<p>$$<br>\begin{align}<br>   \hat{y} = \sigma(w^T x + b)<br>\end{align}<br>$$</p>
+<p>where </p>
+<p>$$<br>\begin{align}<br>   \sigma(z)  = \frac{1}{1 + e^{-z}}<br>\end{align}<br>$$</p>
+<p>The sigmoid function can be represented as:</p>
+<img src="/files/2018/01/sigmoid.png">
+<p>As you can see this activation function allows us to map results to 0 or 1 given:</p>
+<ul>
+<li>For larger positive values of $\mathbf{z}$ we will have a $\mathbf{\sigma(z)}$ near <strong>1</strong></li>
+<li>For larger negative values of $\mathbf{z}$ we will have a $\mathbf{\sigma(z)}$ near <strong>0</strong> </li>
+</ul>
+<h2 id="Cost-Function"><a href="#Cost-Function" class="headerlink" title="Cost Function"></a>Cost Function</h2><p>First of all, we have the <strong>loss function</strong> which is used by one training example:<br>$$<br>\begin{align}<br>  \mathcal{L}(\hat{y}, y) = - \bigl(y\log\hat{y} + (1 - y) \log(1 - \hat{y})\bigr)<br>\end{align}<br>$$</p>
+<p>And the <strong>cost function</strong> measures how you are performing for the entire training set:<br>$$<br>\begin{align}<br>  \mathcal{J}(w, b) = \frac1m \sum_{i=1}^m \mathcal{L}(\hat{y}^{(i)}, y^{(i)})<br>\end{align}<br>$$</p>
+<p>As we want to improve as much as possible the performance, we are going to try to find the w &amp; b  values that minimizes this cost function. And that, is basically what <strong>gradient descent</strong> does for us.</p>
+<h2 id="Gradient-descent"><a href="#Gradient-descent" class="headerlink" title="Gradient descent"></a>Gradient descent</h2><p>Gradient descent is one of the most popuar optimization methods for neural networks for its simplicity (although it can have convergence problems due local minimums). Other optimization methods are: <a href="https://arxiv.org/abs/1412.6980" target="_blank" rel="noopener">Adam</a> or RMSprop.<br>The basic idea on gradient descent is that on each iteration (determined by the <em>slope</em> or derivative $\partial$), the <strong>weights</strong> are updated incrementally using a <em>learning rate</em> $\alpha$.</p>
+<p>A visual interpretation of <strong>gradient descent</strong> is the following:</p>
+<img src="/files/2018/01/gradient.png" width="450" height="243" title="Gradient descent" alt="Gradient descent <br />Source: <a href=https://sebastianraschka.com/faq/docs/closed-form-vs-gd.html>sebastianraschka.com</a>">
+<p>Given our cost function $\mathcal{J}(w, b)$, weights and bias are updated with the following formula:</p>
+<p>$$<br>\begin{align}<br>  w = w - \alpha\,\frac{\partial\,\mathcal{J}(w, b)}{\partial w}<br>\end{align}<br>$$<br>$$<br>\begin{align}<br>  b = b - \alpha\,\frac{\partial\,\mathcal{J}(w, b)}{\partial b}<br>\end{align}<br>$$</p>
+<p>where the symbol $\partial$ in $\partial\,\mathcal{J}(w, b)$ basically means the <strong>derivative</strong> of the cost function.</p>
+<p>In the next post, we will see how apply this theory to a practical example with <strong>python</strong>.</p>
 
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2016/02/07/sentiment-analysis-of-tweets/">
-            <time datetime="2016-02-07T15:40:34.000Z" itemprop="datePublished">2016-02-07</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/Storm/">Storm</a>
-    </div>
-
-                </div>
-            </div>
+        
         </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2016/01/05/analysis-of-twitter-streams-with-kafka-and-storm/">Analysis of twitter streams with Kafka and Storm</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2016/01/05/analysis-of-twitter-streams-with-kafka-and-storm/">
-            <time datetime="2016-01-05T01:24:07.000Z" itemprop="datePublished">2016-01-05</time>
-        </a>
-    </div>
+        <footer class="article-footer">
+            <div class="share-container">
 
 
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
-    </div>
 
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/Cassandra/">Cassandra</a>, <a class="tag-link" href="/tags/Kafka/">Kafka</a>, <a class="tag-link" href="/tags/Storm/">Storm</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
 </div>
+
+    <a data-url="http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning/" data-id="cjci3jqcc000uz18164h4q2b5" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2016/03/15/preview-of-kafka-streams/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">Preview of Kafka Streams</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
 </section>
             
                 
@@ -437,11 +513,13 @@ ga('send', 'pageview');
     <script>
     var disqus_config = function () {
         
-        this.page.identifier = 'undefined';
+            this.page.url = 'http://www.serrate.net/2018/01/16/logistic-regression-for-deep-learning/';
+        
+        this.page.identifier = 'logistic-regression-for-deep-learning';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
-        s.src = '//' + 'serrate-en' + '.disqus.com/count.js';
+        s.src = '//' + 'serrate-en' + '.disqus.com/embed.js';
         s.setAttribute('data-timestamp', +new Date());
         (d.head || d.body).appendChild(s);
     })();
@@ -471,6 +549,23 @@ ga('send', 'pageview');
 <!-- Custom Scripts -->
 <script src="/js/main.js"></script>
 
-    </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 </body>
 </html>
