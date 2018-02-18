@@ -1,5 +1,5 @@
 ---
-title: Logistic Regression for Deep Learning (I)
+title: Logistic Regression for Deep Learning
 categories:
   - Machine Learning
 tags:
