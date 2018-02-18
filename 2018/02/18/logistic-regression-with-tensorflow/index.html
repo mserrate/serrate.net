@@ -3,15 +3,22 @@
 <head>
     <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     
-    <title>Tag: DeepLearning | Marçal Serrate</title>
+    <title>Logistic Regression with TensorFlow | Marçal Serrate</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Marçal Serrate">
-<meta property="og:url" content="http://www.serrate.net/tags/DeepLearning/index.html">
+    <meta name="description" content="In the previous post we’ve seen the basics of  &amp;amp; Binary classification. Now we’re going to see an example with python and TensorFlow. On this example we’re going to use the dataset that shows the">
+<meta name="keywords" content="BigData,DeepLearning,MachineLearning,TensorFlow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Logistic Regression with TensorFlow">
+<meta property="og:url" content="http://www.serrate.net/2018/02/18/logistic-regression-with-tensorflow/index.html">
 <meta property="og:site_name" content="Marçal Serrate">
+<meta property="og:description" content="In the previous post we’ve seen the basics of  &amp;amp; Binary classification. Now we’re going to see an example with python and TensorFlow. On this example we’re going to use the dataset that shows the">
 <meta property="og:locale" content="en">
+<meta property="og:image" content="http://www.serrate.net/files/2018/02/HoursStudiedxHoursSlept.png">
+<meta property="og:updated_time" content="2018-02-18T19:40:14.134Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Marçal Serrate">
+<meta name="twitter:title" content="Logistic Regression with TensorFlow">
+<meta name="twitter:description" content="In the previous post we’ve seen the basics of  &amp;amp; Binary classification. Now we’re going to see an example with python and TensorFlow. On this example we’re going to use the dataset that shows the">
+<meta name="twitter:image" content="http://www.serrate.net/files/2018/02/HoursStudiedxHoursSlept.png">
     
 
     
@@ -140,25 +147,21 @@ ga('send', 'pageview');
 
         <div class="outer">
             
-            <section id="main">
-<div class="timeline timeline-wrap">
-    <div class="timeline-row timeline-row-major">
-        <span class="node"><i class="fa fa-tag"></i></span>
-        <h1 class="title">#DeepLearning</h1>
-    </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+            <section id="main"><article id="post-logistic-regression-with-tensorflow" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
                 
     
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2018/02/18/logistic-regression-with-tensorflow/">Logistic Regression with TensorFlow</a>
+        <h1 class="article-title" itemprop="name">
+            Logistic Regression with TensorFlow
         </h1>
     
 
-                <div class="article-meta">
-                    
+                
+                    <div class="article-meta">
+                        
     <div class="article-date">
         <i class="fa fa-calendar"></i>
         <a href="/2018/02/18/logistic-regression-with-tensorflow/">
@@ -167,59 +170,148 @@ ga('send', 'pageview');
     </div>
 
 
-                    
+                        
     <div class="article-category">
     	<i class="fa fa-folder"></i>
         <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>
     </div>
 
-                    
+                        
     <div class="article-tag">
         <i class="fa fa-tag"></i>
         <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/DeepLearning/">DeepLearning</a>, <a class="tag-link" href="/tags/MachineLearning/">MachineLearning</a>, <a class="tag-link" href="/tags/TensorFlow/">TensorFlow</a>
     </div>
 
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+                    </div>
                 
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2018/01/16/logistic-regression-for-deep-learning-part-i/">Logistic Regression for Deep Learning</a>
-        </h1>
-    
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>In the previous post we’ve seen the basics of  &amp; Binary classification.</p>
+<p>Now we’re going to see an example with <strong>python</strong> and <strong>TensorFlow</strong>.</p>
+<p>On this example we’re going to use the dataset that shows the probability of passing an exam by taking into account <strong>2 features: hours studied vs hours slept</strong>.</p>
+<img src="/files/2018/02/HoursStudiedxHoursSlept.png">
+<p>First, we’re going to import the dependencies:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Import dependencies</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> sklearn</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"></span><br><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">data = np.genfromtxt(<span class="string">'data_classification.csv'</span>, delimiter=<span class="string">','</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#Get the 2 features (hours slept &amp; hours studied)</span></span><br><span class="line">X = data[:, <span class="number">0</span>:<span class="number">2</span>]</span><br><span class="line"><span class="comment"># Get the result (0 suspended - 1 approved)</span></span><br><span class="line">Y = data[:, <span class="number">2</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Plotting</span></span><br><span class="line">pos = np.where(Y == <span class="number">1</span>)</span><br><span class="line">neg = np.where(Y == <span class="number">0</span>)</span><br><span class="line">plt.scatter(X[pos, <span class="number">0</span>], X[pos, <span class="number">1</span>], marker=<span class="string">'o'</span>, c=<span class="string">'b'</span>)</span><br><span class="line">plt.scatter(X[neg, <span class="number">0</span>], X[neg, <span class="number">1</span>], marker=<span class="string">'x'</span>, c=<span class="string">'r'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'Hours studied'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'Hours slept'</span>)</span><br><span class="line">plt.legend([<span class="string">'Approved'</span>, <span class="string">'Suspended'</span>])</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment">#Split the data in train &amp; test</span></span><br><span class="line">Y_reshape = data[:,<span class="number">2</span>].reshape(data[:,<span class="number">2</span>].shape[<span class="number">0</span>], <span class="number">1</span>)</span><br><span class="line">x_train, x_test, y_train, y_test = train_test_split(data[:, <span class="number">0</span>:<span class="number">2</span>], Y_reshape)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> (<span class="string">"x_train shape: "</span> + str(x_train.shape))</span><br><span class="line"><span class="keyword">print</span> (<span class="string">"y_train shape: "</span> + str(y_train.shape))</span><br><span class="line"><span class="keyword">print</span> (<span class="string">"x_test shape: "</span> + str(x_test.shape))</span><br><span class="line"><span class="keyword">print</span> (<span class="string">"y_test shape: "</span> + str(y_test.shape))</span><br><span class="line"></span><br><span class="line">num_features = x_train.shape[<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<p>Now we’re building the logistic regression model with <strong>TensorFlow</strong>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">learning_rate = <span class="number">0.01</span></span><br><span class="line">training_epochs = <span class="number">1000</span></span><br><span class="line"></span><br><span class="line">tf.reset_default_graph()</span><br><span class="line"></span><br><span class="line"><span class="comment"># By aving 2 features: hours slept &amp; hours studied</span></span><br><span class="line">X = tf.placeholder(tf.float32, [<span class="keyword">None</span>, num_features], name=<span class="string">"X"</span>)</span><br><span class="line">Y = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">1</span>], name=<span class="string">"Y"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Initialize our weigts &amp; bias</span></span><br><span class="line">W = tf.get_variable(<span class="string">"W"</span>, [num_features, <span class="number">1</span>], initializer = tf.contrib.layers.xavier_initializer())</span><br><span class="line">b = tf.get_variable(<span class="string">"b"</span>, [<span class="number">1</span>], initializer = tf.zeros_initializer())</span><br><span class="line"></span><br><span class="line">Z = tf.add(tf.matmul(X, W), b)</span><br><span class="line">prediction = tf.nn.sigmoid(Z)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Calculate the cost</span></span><br><span class="line">cost = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits = Z, labels = Y))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Use Adam as optimization method</span></span><br><span class="line">optimizer = tf.train.AdamOptimizer(learning_rate).minimize(cost)</span><br><span class="line"></span><br><span class="line">init = tf.global_variables_initializer()</span><br><span class="line"></span><br><span class="line">cost_history = np.empty(shape=[<span class="number">1</span>],dtype=float)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    sess.run(init)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> range(training_epochs):</span><br><span class="line">        _, c = sess.run([optimizer, cost], feed_dict=&#123;X: x_train, Y: y_train&#125;)</span><br><span class="line">        print(<span class="string">"Epoch:"</span>, <span class="string">'%04d'</span> % (epoch+<span class="number">1</span>), <span class="string">"cost="</span>, <span class="string">"&#123;:.9f&#125;"</span>.format(c), \</span><br><span class="line">               <span class="string">"W="</span>, sess.run(W), <span class="string">"b="</span>, sess.run(b))</span><br><span class="line">        cost_history = np.append(cost_history, c)</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    <span class="comment"># Calculate the correct predictions</span></span><br><span class="line">    correct_prediction = tf.to_float(tf.greater(prediction, <span class="number">0.5</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Calculate accuracy on the test set</span></span><br><span class="line">    accuracy = tf.reduce_mean(tf.to_float(tf.equal(Y, correct_prediction)))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">print</span> (<span class="string">"Train Accuracy:"</span>, accuracy.eval(&#123;X: x_train, Y: y_train&#125;))</span><br><span class="line">    <span class="keyword">print</span> (<span class="string">"Test Accuracy:"</span>, accuracy.eval(&#123;X: x_test, Y: y_test&#125;))</span><br></pre></td></tr></table></figure>
+<p>Our accuracy is 86% not too bad with a dataset of only 100 elements. The optimization of the cost function is as follows:</p>
+<img src="/files/2018/02/CostIteration.png" width="450">
+<p>So, our linear regression example looks like follows:</p>
+<img src="/files/2018/02/Linear.png">
 
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2018/01/16/logistic-regression-for-deep-learning-part-i/">
-            <time datetime="2018-01-15T23:00:00.000Z" itemprop="datePublished">2018-01-16</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/DeepLearning/">DeepLearning</a>, <a class="tag-link" href="/tags/MachineLearning/">MachineLearning</a>
-    </div>
-
-                </div>
-            </div>
+        
         </div>
-    
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
 </div>
+
+    <a data-url="http://www.serrate.net/2018/02/18/logistic-regression-with-tensorflow/" data-id="cjdt7b685000uak8145atprm4" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://www.serrate.net/2018/02/18/logistic-regression-with-tensorflow/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2018/02/18/logistic-regression-with-tensorflow/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2018/01/16/logistic-regression-for-deep-learning-part-i/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">Logistic Regression for Deep Learning</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
 </section>
             
                 
@@ -401,11 +493,13 @@ ga('send', 'pageview');
     <script>
     var disqus_config = function () {
         
-        this.page.identifier = 'undefined';
+            this.page.url = 'http://www.serrate.net/2018/02/18/logistic-regression-with-tensorflow/';
+        
+        this.page.identifier = 'logistic-regression-with-tensorflow';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
-        s.src = '//' + 'serrate-en' + '.disqus.com/count.js';
+        s.src = '//' + 'serrate-en' + '.disqus.com/embed.js';
         s.setAttribute('data-timestamp', +new Date());
         (d.head || d.body).appendChild(s);
     })();
@@ -435,6 +529,23 @@ ga('send', 'pageview');
 <!-- Custom Scripts -->
 <script src="/js/main.js"></script>
 
-    </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 </body>
 </html>

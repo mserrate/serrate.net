@@ -141,6 +141,152 @@ ga('send', 'pageview');
         <div class="outer">
             
             <section id="main">
+    <article id="post-cassandra-on-azure-centos-vm" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<a href="/2012/08/27/cassandra-on-azure-centos-vm/" itemprop="url">
+            <img src="/files/2012/08/cassandravm.png" class="article-banner" />
+        </a>
+	
+
+
+
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/2012/08/27/cassandra-on-azure-centos-vm/">Cassandra on Azure CentOS VM</a>
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2012/08/27/cassandra-on-azure-centos-vm/">
+            <time datetime="2012-08-27T09:36:02.000Z" itemprop="datePublished">2012-08-27</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/NoSQL/">NoSQL</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Azure/">Azure</a>, <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/Cassandra/">Cassandra</a>, <a class="tag-link" href="/tags/NoSQL/">NoSQL</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            <p><p>Having some fun with Cassandra lately I wanted to figure out how to setup a working environment on the new Windows Azure VM roles, so I decided to give a try and install a <strong>Cassandra cluster on CentOS</strong>.</p>
+<p>Although it’s on Ubuntu, the following article is a good guide that helped me to configure a Linux cluster: <a href="https://www.windowsazure.com/en-us/manage/linux/other-resources/how-to-run-cassandra-with-linux/" target="_blank">https://www.windowsazure.com/en-us/manage/linux/other-resources/how-to-run-cassandra-with-linux/</a></p>
+<p>We create the 1<sup>st</sup> VM assigning a pem certificate in order to get access by ssh:</p>
+<img src="/files/2012/08/1.png" class="border" width="500" height="340" title="Create VM"></p>
+            <p class="article-more-link">
+                <a href="/2012/08/27/cassandra-on-azure-centos-vm/#more">Read More</a>
+            </p>
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://www.serrate.net/2012/08/27/cassandra-on-azure-centos-vm/" data-id="cjdt7b67g0007ak814z8t63p0" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://www.serrate.net/2012/08/27/cassandra-on-azure-centos-vm/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2012/08/27/cassandra-on-azure-centos-vm/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+</article>
+
+
+
     <article id="post-ui-composition-for-services" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
@@ -209,7 +355,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2012/08/22/ui-composition-for-services/" data-id="cjd3kk8nr00017u810bm3q5r8" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2012/08/22/ui-composition-for-services/" data-id="cjdt7b67e0006ak81jdowxmxh" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -362,7 +508,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2012/08/05/welcome-to-my-blog/" data-id="cjd3kk8nm00007u81f53yoekp" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2012/08/05/welcome-to-my-blog/" data-id="cjdt7b66v0000ak81qhwk7yxd" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -453,10 +599,10 @@ ga('send', 'pageview');
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2018/01/16/logistic-regression-for-deep-learning-part-i/" class="thumbnail">
+                            <a href="/2018/02/18/logistic-regression-with-tensorflow/" class="thumbnail">
     
     
-        <span style="background-image:url(/files/2018/01/sigmoid.png)" alt="Logistic Regression for Deep Learning (I)" class="thumbnail-image"></span>
+        <span style="background-image:url(/files/2018/02/HoursStudiedxHoursSlept.png)" alt="Logistic Regression with TensorFlow" class="thumbnail-image"></span>
     
 </a>
 
@@ -464,7 +610,26 @@ ga('send', 'pageview');
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a></p>
-                            <p class="item-title"><a href="/2018/01/16/logistic-regression-for-deep-learning-part-i/" class="title">Logistic Regression for Deep Learning (I)</a></p>
+                            <p class="item-title"><a href="/2018/02/18/logistic-regression-with-tensorflow/" class="title">Logistic Regression with TensorFlow</a></p>
+                            <p class="item-date"><time datetime="2018-02-17T23:00:00.000Z" itemprop="datePublished">2018-02-18</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/01/16/logistic-regression-for-deep-learning-part-i/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2018/01/sigmoid.png)" alt="Logistic Regression for Deep Learning" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a></p>
+                            <p class="item-title"><a href="/2018/01/16/logistic-regression-for-deep-learning-part-i/" class="title">Logistic Regression for Deep Learning</a></p>
                             <p class="item-date"><time datetime="2018-01-15T23:00:00.000Z" itemprop="datePublished">2018-01-16</time></p>
                         </div>
                     </li>
@@ -526,25 +691,6 @@ ga('send', 'pageview');
                         </div>
                     </li>
                 
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/2015/12/13/big-data-streams-and-lambdas/" class="thumbnail">
-    
-    
-        <span style="background-image:url(/files/2015/12/stream_banner.png)" alt="Big Data: streams and lambdas" class="thumbnail-image"></span>
-    
-</a>
-
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
-                            <p class="item-title"><a href="/2015/12/13/big-data-streams-and-lambdas/" class="title">Big Data: streams and lambdas</a></p>
-                            <p class="item-date"><time datetime="2015-12-13T00:31:08.000Z" itemprop="datePublished">2015-12-13</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -554,7 +700,7 @@ ga('send', 'pageview');
     <div class="widget-wrap">
         <h3 class="widget-title">categories</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/NServiceBus/">NServiceBus</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Machine-Learning/">Machine Learning</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NoSQL/">NoSQL</a><span class="category-list-count">1</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/NServiceBus/">NServiceBus</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Machine-Learning/">Machine Learning</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NoSQL/">NoSQL</a><span class="category-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -563,7 +709,7 @@ ga('send', 'pageview');
     <div class="widget-wrap">
         <h3 class="widget-title">archives</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">November 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">October 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">September 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">August 2012</a><span class="archive-list-count">3</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">November 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">October 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">September 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">August 2012</a><span class="archive-list-count">3</span></li></ul>
         </div>
     </div>
 
@@ -572,7 +718,7 @@ ga('send', 'pageview');
     <div class="widget-wrap">
         <h3 class="widget-title">tags</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Azure/">Azure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BigData/">BigData</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CQRS/">CQRS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cassandra/">Cassandra</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/">DDD</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DeepLearning/">DeepLearning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventStore/">EventStore</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MachineLearning/">MachineLearning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Misc/">Misc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NServiceBus/">NServiceBus</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/">NoSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOA/">SOA</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Storm/">Storm</a><span class="tag-list-count">3</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Azure/">Azure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BigData/">BigData</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CQRS/">CQRS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cassandra/">Cassandra</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/">DDD</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DeepLearning/">DeepLearning</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventStore/">EventStore</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MachineLearning/">MachineLearning</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Misc/">Misc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NServiceBus/">NServiceBus</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/">NoSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOA/">SOA</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Storm/">Storm</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/">TensorFlow</a><span class="tag-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -581,7 +727,7 @@ ga('send', 'pageview');
     <div class="widget-wrap">
         <h3 class="widget-title">tag cloud</h3>
         <div class="widget tagcloud">
-            <a href="/tags/Azure/" style="font-size: 10px;">Azure</a> <a href="/tags/BigData/" style="font-size: 20px;">BigData</a> <a href="/tags/CQRS/" style="font-size: 15px;">CQRS</a> <a href="/tags/Cassandra/" style="font-size: 12.5px;">Cassandra</a> <a href="/tags/DDD/" style="font-size: 15px;">DDD</a> <a href="/tags/DeepLearning/" style="font-size: 10px;">DeepLearning</a> <a href="/tags/EventStore/" style="font-size: 10px;">EventStore</a> <a href="/tags/Kafka/" style="font-size: 12.5px;">Kafka</a> <a href="/tags/MachineLearning/" style="font-size: 10px;">MachineLearning</a> <a href="/tags/Misc/" style="font-size: 10px;">Misc</a> <a href="/tags/NServiceBus/" style="font-size: 15px;">NServiceBus</a> <a href="/tags/NoSQL/" style="font-size: 10px;">NoSQL</a> <a href="/tags/SOA/" style="font-size: 17.5px;">SOA</a> <a href="/tags/Storm/" style="font-size: 15px;">Storm</a>
+            <a href="/tags/Azure/" style="font-size: 10px;">Azure</a> <a href="/tags/BigData/" style="font-size: 20px;">BigData</a> <a href="/tags/CQRS/" style="font-size: 15px;">CQRS</a> <a href="/tags/Cassandra/" style="font-size: 12.5px;">Cassandra</a> <a href="/tags/DDD/" style="font-size: 15px;">DDD</a> <a href="/tags/DeepLearning/" style="font-size: 12.5px;">DeepLearning</a> <a href="/tags/EventStore/" style="font-size: 10px;">EventStore</a> <a href="/tags/Kafka/" style="font-size: 12.5px;">Kafka</a> <a href="/tags/MachineLearning/" style="font-size: 12.5px;">MachineLearning</a> <a href="/tags/Misc/" style="font-size: 10px;">Misc</a> <a href="/tags/NServiceBus/" style="font-size: 15px;">NServiceBus</a> <a href="/tags/NoSQL/" style="font-size: 10px;">NoSQL</a> <a href="/tags/SOA/" style="font-size: 17.5px;">SOA</a> <a href="/tags/Storm/" style="font-size: 15px;">Storm</a> <a href="/tags/TensorFlow/" style="font-size: 10px;">TensorFlow</a>
         </div>
     </div>
 
