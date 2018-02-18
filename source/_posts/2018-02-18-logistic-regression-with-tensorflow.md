@@ -10,7 +10,7 @@ tags:
 thumbnail: /files/2018/02/HoursStudiedxHoursSlept.png
 ---
 
-In the previous post we've seen the basics of {% post_link logistic-regression-for-deep-learning Logistic Regression %} & Binary classification.
+In the previous post we've seen the basics of {% post_link logistic-regression-for-deep-learning-part-i Logistic Regression %} & Binary classification.
 
 Now we're going to see an example with **python** and **TensorFlow**.
 
