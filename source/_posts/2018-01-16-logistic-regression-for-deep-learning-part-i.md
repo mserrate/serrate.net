@@ -96,4 +96,4 @@ $$
 
 where the symbol $\partial$ in $\partial\,\mathcal{J}(w, b)$ basically means the **derivative** of the cost function.
 
-In the next post, we will see how apply this theory to a practical example with **python**.
+In the next post, we will see how to apply this theory with an example written with {% post_link logistic-regression-with-tensorflow python & TensorFlow %}.
