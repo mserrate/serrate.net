@@ -3,20 +3,22 @@
 <head>
     <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     
-    <title>NServiceBus: DRY with unobtrusive conventions | Marçal Serrate</title>
+    <title>Using an external Hive Metastore in Azure Databricks | Marçal Serrate</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="Many times when working with NServiceBus in unobtrusive mode you may feel that you are repeating the same conventions over and over again on all the endpoints. The IWantToRunBeforeConfiguration interf">
-<meta name="keywords" content="SOA,NServiceBus">
+    <meta name="description" content="If you already have a Hive metastore, such as the one used by Azure HDInsight, you can use Spark SQL to query the tables the same way you do it in Hive with the advantage to have a centralized metasto">
+<meta name="keywords" content="BigData,Spark,Hive">
 <meta property="og:type" content="article">
-<meta property="og:title" content="NServiceBus: DRY with unobtrusive conventions">
-<meta property="og:url" content="http://www.serrate.net/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/index.html">
+<meta property="og:title" content="Using an external Hive Metastore in Azure Databricks">
+<meta property="og:url" content="http://www.serrate.net/2018/06/30/azure-databricks-hive-metastore/index.html">
 <meta property="og:site_name" content="Marçal Serrate">
-<meta property="og:description" content="Many times when working with NServiceBus in unobtrusive mode you may feel that you are repeating the same conventions over and over again on all the endpoints. The IWantToRunBeforeConfiguration interf">
+<meta property="og:description" content="If you already have a Hive metastore, such as the one used by Azure HDInsight, you can use Spark SQL to query the tables the same way you do it in Hive with the advantage to have a centralized metasto">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2017-07-02T16:01:45.000Z">
+<meta property="og:image" content="http://www.serrate.net/files/2018/06/metastore.png">
+<meta property="og:updated_time" content="2018-06-30T11:27:53.243Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="NServiceBus: DRY with unobtrusive conventions">
-<meta name="twitter:description" content="Many times when working with NServiceBus in unobtrusive mode you may feel that you are repeating the same conventions over and over again on all the endpoints. The IWantToRunBeforeConfiguration interf">
+<meta name="twitter:title" content="Using an external Hive Metastore in Azure Databricks">
+<meta name="twitter:description" content="If you already have a Hive metastore, such as the one used by Azure HDInsight, you can use Spark SQL to query the tables the same way you do it in Hive with the advantage to have a centralized metasto">
+<meta name="twitter:image" content="http://www.serrate.net/files/2018/06/metastore.png">
     
 
     
@@ -145,7 +147,7 @@ ga('send', 'pageview');
 
         <div class="outer">
             
-            <section id="main"><article id="post-nservicebus-dry-with-unobtrusive-conventions" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-azure-databricks-hive-metastore" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
         
@@ -153,7 +155,7 @@ ga('send', 'pageview');
                 
     
         <h1 class="article-title" itemprop="name">
-            NServiceBus: DRY with unobtrusive conventions
+            Using an external Hive Metastore in Azure Databricks
         </h1>
     
 
@@ -162,8 +164,8 @@ ga('send', 'pageview');
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/">
-            <time datetime="2012-10-16T08:20:11.000Z" itemprop="datePublished">2012-10-16</time>
+        <a href="/2018/06/30/azure-databricks-hive-metastore/">
+            <time datetime="2018-06-29T22:00:00.000Z" itemprop="datePublished">2018-06-30</time>
         </a>
     </div>
 
@@ -171,13 +173,13 @@ ga('send', 'pageview');
                         
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Architecture/">Architecture</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Architecture/NServiceBus/">NServiceBus</a>
+        <a class="article-category-link" href="/categories/Spark/">Spark</a>
     </div>
 
                         
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/NServiceBus/">NServiceBus</a>, <a class="tag-link" href="/tags/SOA/">SOA</a>
+        <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/Hive/">Hive</a>, <a class="tag-link" href="/tags/Spark/">Spark</a>
     </div>
 
                     </div>
@@ -188,11 +190,10 @@ ga('send', 'pageview');
         <div class="article-entry" itemprop="articleBody">
         
             
-            <p>Many times when working with NServiceBus in <a href="http://nservicebus.com/docs/Samples/UnobtrusiveModeSample.aspx" target="_blank">unobtrusive mode</a> you may feel that you are repeating the same conventions over and over again on all the endpoints.</p>
-<p>The <strong>IWantToRunBeforeConfiguration</strong> interface is a great help in order to embrace the DRY principle.</p>
-<p>Just define your implementation in an assembly referenced by all the endpoints:</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UnobtrusiveConventions</span> : <span class="title">IWantToRunBeforeConfiguration</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Init</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Configure.Instance</span><br><span class="line">            .DefiningCommandsAs(t =&gt; t.Namespace != <span class="literal">null</span></span><br><span class="line">                &amp;&amp; t.Namespace.EndsWith(<span class="string">"Commands"</span>))</span><br><span class="line">            .DefiningEventsAs(t =&gt;; t.Namespace != <span class="literal">null</span></span><br><span class="line">                &amp;&amp; t.Namespace.EndsWith(<span class="string">"Events"</span>))</span><br><span class="line">            .DefiningMessagesAs(t =&gt; t.Namespace != <span class="literal">null</span></span><br><span class="line">                &amp;&amp; t.Namespace.EndsWith(<span class="string">"Messages"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>and NServiceBus will pick this class automatically for each endpoint.</p>
+            <p>If you already have a Hive metastore, such as the one used by <a href="https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-use-external-metadata-stores" target="_blank">Azure HDInsight</a>, you can use Spark SQL to query the tables the same way you do it in Hive with the advantage to have a centralized metastore to manage your table schemas from both Databricks and HDInsight.</p>
+<img src="/files/2018/06/metastore.png">
+<p>There are a couple of options to set up in the spark cluster configuration.<br>Apart from the database configuration options you need to specify the hive metastore version, for the current HDInsight version this is 2.1.1, and make sure to set <strong>hive.metastore.schema.verification.record.version</strong> and <strong>hive.metastore.schema.verification</strong> to <em>true</em> to make sure that the Spark cluster doesn’t update the metastore schema.<br>Also you will need to give access to the right <strong>Azure Storage</strong> account/s in order to have the right permissions to access the underlying physical data (remember that metastore is only that, metadata, not the actual data).</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">spark.hadoop.javax.jdo.option.ConnectionDriverName com.microsoft.sqlserver.jdbc.SQLServerDriver</span><br><span class="line">spark.hadoop.javax.jdo.option.ConnectionURL jdbc:sqlserver://YOUDBSERVER:1433;database=metastore;encrypt=true;trustServerCertificate=true;create=false;loginTimeout=300</span><br><span class="line">spark.hadoop.javax.jdo.option.ConnectionUserName YOURDBUSERNAME</span><br><span class="line">spark.hadoop.javax.jdo.option.ConnectionPassword YOURDBPASSWORD</span><br><span class="line">hive.metastore.schema.verification.record.version true</span><br><span class="line">spark.sql.hive.metastore.jars maven</span><br><span class="line">hive.metastore.schema.verification true</span><br><span class="line">spark.sql.hive.metastore.version 2.1.1</span><br><span class="line">fs.azure.account.key.YOURACCOUNTNAME.blob.core.windows.net YOURACCOUNTKEY</span><br></pre></td></tr></table></figure>
 
         
         </div>
@@ -203,7 +204,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/" data-id="cjdt7e7560008er81c8txyo6r" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2018/06/30/azure-databricks-hive-metastore/" data-id="cjj1bryej0000qb81cyagcn41" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -271,7 +272,7 @@ ga('send', 'pageview');
 
             
     
-        <a href="http://www.serrate.net/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/">Comments</a>
+        <a href="http://www.serrate.net/2018/06/30/azure-databricks-hive-metastore/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2018/06/30/azure-databricks-hive-metastore/">Comments</a>
     
 
         </footer>
@@ -280,19 +281,10 @@ ga('send', 'pageview');
         
 <nav id="article-nav">
     
-        <a href="/2012/11/05/webcast-about-soa-ddd-cqrs-with-nservicebus/" id="article-nav-newer" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">Newer</strong>
-            <div class="article-nav-title">
-                
-                    Webcast about SOA, DDD &amp; CQRS with NServiceBus
-                
-            </div>
-        </a>
     
-    
-        <a href="/2012/09/11/nservicebus-training/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/2018/02/18/logistic-regression-with-tensorflow/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">Older</strong>
-            <div class="article-nav-title">NServiceBus Training</div>
+            <div class="article-nav-title">Logistic Regression with TensorFlow</div>
         </a>
     
 </nav>
@@ -492,9 +484,9 @@ ga('send', 'pageview');
     <script>
     var disqus_config = function () {
         
-            this.page.url = 'http://www.serrate.net/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/';
+            this.page.url = 'http://www.serrate.net/2018/06/30/azure-databricks-hive-metastore/';
         
-        this.page.identifier = 'nservicebus-dry-with-unobtrusive-conventions';
+        this.page.identifier = 'azure-databricks-hive-metastore';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
