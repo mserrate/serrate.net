@@ -141,6 +141,156 @@ ga('send', 'pageview');
         <div class="outer">
             
             <section id="main">
+    <article id="post-introduction-to-mlflow" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/2018/07/03/introduction-to-mlflow/">Introduction to MLflow</a>
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2018/07/03/introduction-to-mlflow/">
+            <time datetime="2018-07-02T22:00:00.000Z" itemprop="datePublished">2018-07-03</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/ML/">ML</a>, <a class="tag-link" href="/tags/MachineLearning/">MachineLearning</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p><a href="https://mlflow.org/" target="_blank">MLflow</a> is a tool to manage the lifecycle of Machine Learning projects. Is composed by three components:</p>
+<ul>
+<li>Tracking: Records parameters, metrics and artifacts of each run of a model</li>
+<li>Projects: Format for packaging data science projects and its dependencies</li>
+<li>Models: Generic format for packaging ML models and serve them through REST API or others.</li>
+</ul>
+<h2 id="ML-Tracking-using-XGBoost"><a href="#ML-Tracking-using-XGBoost" class="headerlink" title="ML Tracking using XGBoost"></a>ML Tracking using XGBoost</h2><p>Let’s work on a quick sample to demonstrate the benefits of <a href="https://www.mlflow.org" target="_blank" rel="noopener">MLFlow</a> by tracking ML experiment using <em>XGBoost</em> and the <a href="https://archive.ics.uci.edu/ml/datasets/Census+Income" target="_blank" rel="noopener">Census Income Data Set</a>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> mlflow.start_run():</span><br><span class="line">    <span class="comment"># model parameters</span></span><br><span class="line">    params = &#123;<span class="string">'learning_rate'</span>: <span class="number">0.1</span>, <span class="string">'n_estimators'</span>: <span class="number">100</span>, <span class="string">'seed'</span>: <span class="number">0</span>, <span class="string">'subsample'</span>: <span class="number">1</span>, <span class="string">'colsample_bytree'</span>: <span class="number">1</span>,</span><br><span class="line">                  <span class="string">'objective'</span>: <span class="string">'binary:logistic'</span>, <span class="string">'max_depth'</span>: <span class="number">3</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># log model params</span></span><br><span class="line">    <span class="keyword">for</span> key <span class="keyword">in</span> params:</span><br><span class="line">        mlflow.log_param(key, params[key])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># train XGBoost model</span></span><br><span class="line">    gbtree = XGBClassifier(**params)</span><br><span class="line">    gbtree.fit(train_features, train_labels)</span><br><span class="line"></span><br><span class="line">    importances = gbtree.get_booster().get_fscore()</span><br><span class="line">    print(importances)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># get predictions</span></span><br><span class="line">    y_pred = gbtree.predict(test_features)</span><br><span class="line"></span><br><span class="line">    accuracy = accuracy_score(test_labels, y_pred)</span><br><span class="line">    print(<span class="string">"Accuracy: %.1f%%"</span> % (accuracy * <span class="number">100.0</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># log accuracy metric</span></span><br><span class="line">    mlflow.log_metric(<span class="string">"accuracy"</span>, accuracy)</span><br><span class="line"></span><br><span class="line">    sns.set(font_scale=<span class="number">1.5</span>)</span><br><span class="line">    xgb.plot_importance(gbtree)</span><br><span class="line">    plt.savefig(<span class="string">"importance.png"</span>, dpi = <span class="number">200</span>, bbox_inches = <span class="string">"tight"</span>)</span><br><span class="line"></span><br><span class="line">    mlflow.log_artifact(<span class="string">"importance.png"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># log model</span></span><br><span class="line">    mlflow.sklearn.log_model(gbtree, <span class="string">"model"</span>)</span><br></pre></td></tr></table></figure>
+<p>In this example, we’re using the MLflow Python API to track the experiment parameters, metric (accuracy), artifacts (our plot) and the XGBoost model.</p>
+<p>When we run for the first time, we can see in the MLflow UI the following:</p>
+<img src="/files/2018/07/1run.png">
+<p>With our initial parameters we see that the metric accuracy is: <strong>0.866 (86.6%)</strong></p>
+<p>If we select the run and we see our artifact:</p>
+<img src="/files/2018/07/1run_artifact.png">
+<p>Next, we will change our parameter <em>max_depth</em> to 6 and let’s see what happens:</p>
+<img src="/files/2018/07/2run.png">
+<p>And we see that our accuract has improved: <strong>0.874 (87.4%)</strong></p>
+<p>All the history is tracked, as well as the model itself, so it means we will have all our experiments history tracked and the performance on the model at one moment in time.</p>
+<p>You can check the full sample in Github <a href="https://github.com/mserrate/mlflow-sample" target="_blank" rel="noopener">https://github.com/mserrate/mlflow-sample</a>.</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://www.serrate.net/2018/07/03/introduction-to-mlflow/" data-id="cjj4qyls40000v781epth8ekt" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://www.serrate.net/2018/07/03/introduction-to-mlflow/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2018/07/03/introduction-to-mlflow/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+</article>
+
+
+
     <article id="post-azure-databricks-hive-metastore" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
@@ -1469,142 +1619,6 @@ ga('send', 'pageview');
 
 
 
-    <article id="post-nservicebus-dry-with-unobtrusive-conventions" class="article article-type-post" itemscope itemprop="blogPost">
-    <div class="article-inner">
-        
-        
-            <header class="article-header">
-                
-    
-        <h1 itemprop="name">
-            <a class="article-title" href="/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/">NServiceBus: DRY with unobtrusive conventions</a>
-        </h1>
-    
-
-                
-                    <div class="article-meta">
-                        
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/">
-            <time datetime="2012-10-16T08:20:11.000Z" itemprop="datePublished">2012-10-16</time>
-        </a>
-    </div>
-
-
-                        
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Architecture/">Architecture</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/Architecture/NServiceBus/">NServiceBus</a>
-    </div>
-
-                        
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/NServiceBus/">NServiceBus</a>, <a class="tag-link" href="/tags/SOA/">SOA</a>
-    </div>
-
-                    </div>
-                
-            </header>
-        
-        
-        <div class="article-entry" itemprop="articleBody">
-        
-            
-            <p>Many times when working with NServiceBus in <a href="http://nservicebus.com/docs/Samples/UnobtrusiveModeSample.aspx" target="_blank">unobtrusive mode</a> you may feel that you are repeating the same conventions over and over again on all the endpoints.</p>
-<p>The <strong>IWantToRunBeforeConfiguration</strong> interface is a great help in order to embrace the DRY principle.</p>
-<p>Just define your implementation in an assembly referenced by all the endpoints:</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UnobtrusiveConventions</span> : <span class="title">IWantToRunBeforeConfiguration</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Init</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Configure.Instance</span><br><span class="line">            .DefiningCommandsAs(t =&gt; t.Namespace != <span class="literal">null</span></span><br><span class="line">                &amp;&amp; t.Namespace.EndsWith(<span class="string">"Commands"</span>))</span><br><span class="line">            .DefiningEventsAs(t =&gt;; t.Namespace != <span class="literal">null</span></span><br><span class="line">                &amp;&amp; t.Namespace.EndsWith(<span class="string">"Events"</span>))</span><br><span class="line">            .DefiningMessagesAs(t =&gt; t.Namespace != <span class="literal">null</span></span><br><span class="line">                &amp;&amp; t.Namespace.EndsWith(<span class="string">"Messages"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>and NServiceBus will pick this class automatically for each endpoint.</p>
-
-        
-        </div>
-        <footer class="article-footer">
-            <div class="share-container">
-
-
-
-</div>
-
-    <a data-url="http://www.serrate.net/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/" data-id="cjdt7e7560008er81c8txyo6r" class="article-share-link"><i class="fa fa-share"></i>Share</a>
-<script>
-    (function ($) {
-        // Prevent duplicate binding
-        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
-            __SHARE_BUTTON_BINDED__ = true;
-        } else {
-            return;
-        }
-        $('body').on('click', function() {
-            $('.article-share-box.on').removeClass('on');
-        }).on('click', '.article-share-link', function(e) {
-            e.stopPropagation();
-
-            var $this = $(this),
-                url = $this.attr('data-url'),
-                encodedUrl = encodeURIComponent(url),
-                id = 'article-share-box-' + $this.attr('data-id'),
-                offset = $this.offset(),
-                box;
-
-            if ($('#' + id).length) {
-                box = $('#' + id);
-
-                if (box.hasClass('on')){
-                    box.removeClass('on');
-                    return;
-                }
-            } else {
-                var html = [
-                    '<div id="' + id + '" class="article-share-box">',
-                        '<input class="article-share-input" value="' + url + '">',
-                        '<div class="article-share-links">',
-                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
-                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
-                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
-                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
-                        '</div>',
-                    '</div>'
-                ].join('');
-
-              box = $(html);
-
-              $('body').append(box);
-            }
-
-            $('.article-share-box.on').hide();
-
-            box.css({
-                top: offset.top + 25,
-                left: offset.left
-            }).addClass('on');
-
-        }).on('click', '.article-share-box', function (e) {
-            e.stopPropagation();
-        }).on('click', '.article-share-box-input', function () {
-            $(this).select();
-        }).on('click', '.article-share-box-link', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
-        });
-    })(jQuery);
-</script>
-
-            
-    
-        <a href="http://www.serrate.net/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/">Comments</a>
-    
-
-        </footer>
-    </div>
-    
-</article>
-
-
-
     <nav id="page-nav">
         <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
@@ -1618,6 +1632,25 @@ ga('send', 'pageview');
         <h3 class="widget-title">recent</h3>
         <div class="widget">
             <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/07/03/introduction-to-mlflow/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/files/2018/07/1run_artifact.png)" alt="Introduction to MLflow" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a></p>
+                            <p class="item-title"><a href="/2018/07/03/introduction-to-mlflow/" class="title">Introduction to MLflow</a></p>
+                            <p class="item-date"><time datetime="2018-07-02T22:00:00.000Z" itemprop="datePublished">2018-07-03</time></p>
+                        </div>
+                    </li>
                 
                     <li>
                         
@@ -1695,25 +1728,6 @@ ga('send', 'pageview');
                         </div>
                     </li>
                 
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/2016/02/07/sentiment-analysis-of-tweets/" class="thumbnail">
-    
-    
-        <span style="background-image:url(/files/2016/02/TwitterTopology_Analysis.png)" alt="Sentiment analysis of tweets" class="thumbnail-image"></span>
-    
-</a>
-
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Architecture/">Architecture</a></p>
-                            <p class="item-title"><a href="/2016/02/07/sentiment-analysis-of-tweets/" class="title">Sentiment analysis of tweets</a></p>
-                            <p class="item-date"><time datetime="2016-02-07T15:40:34.000Z" itemprop="datePublished">2016-02-07</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -1723,7 +1737,7 @@ ga('send', 'pageview');
     <div class="widget-wrap">
         <h3 class="widget-title">categories</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/NServiceBus/">NServiceBus</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Machine-Learning/">Machine Learning</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NoSQL/">NoSQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spark/">Spark</a><span class="category-list-count">1</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/">Architecture</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Architecture/NServiceBus/">NServiceBus</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Machine-Learning/">Machine Learning</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NoSQL/">NoSQL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spark/">Spark</a><span class="category-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -1732,7 +1746,7 @@ ga('send', 'pageview');
     <div class="widget-wrap">
         <h3 class="widget-title">archives</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">November 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">October 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">September 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">August 2012</a><span class="archive-list-count">3</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">November 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">October 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">September 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/08/">August 2012</a><span class="archive-list-count">3</span></li></ul>
         </div>
     </div>
 
@@ -1741,7 +1755,7 @@ ga('send', 'pageview');
     <div class="widget-wrap">
         <h3 class="widget-title">tags</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Azure/">Azure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BigData/">BigData</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CQRS/">CQRS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cassandra/">Cassandra</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/">DDD</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DeepLearning/">DeepLearning</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventStore/">EventStore</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/">Hive</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MachineLearning/">MachineLearning</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Misc/">Misc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NServiceBus/">NServiceBus</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/">NoSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOA/">SOA</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/">Spark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Storm/">Storm</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/">TensorFlow</a><span class="tag-list-count">1</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Azure/">Azure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BigData/">BigData</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CQRS/">CQRS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cassandra/">Cassandra</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/">DDD</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DeepLearning/">DeepLearning</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventStore/">EventStore</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/">Hive</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MachineLearning/">MachineLearning</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Misc/">Misc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NServiceBus/">NServiceBus</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/">NoSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SOA/">SOA</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/">Spark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Storm/">Storm</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/">TensorFlow</a><span class="tag-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -1750,7 +1764,7 @@ ga('send', 'pageview');
     <div class="widget-wrap">
         <h3 class="widget-title">tag cloud</h3>
         <div class="widget tagcloud">
-            <a href="/tags/Azure/" style="font-size: 10px;">Azure</a> <a href="/tags/BigData/" style="font-size: 20px;">BigData</a> <a href="/tags/CQRS/" style="font-size: 15px;">CQRS</a> <a href="/tags/Cassandra/" style="font-size: 12.5px;">Cassandra</a> <a href="/tags/DDD/" style="font-size: 15px;">DDD</a> <a href="/tags/DeepLearning/" style="font-size: 12.5px;">DeepLearning</a> <a href="/tags/EventStore/" style="font-size: 10px;">EventStore</a> <a href="/tags/Hive/" style="font-size: 10px;">Hive</a> <a href="/tags/Kafka/" style="font-size: 12.5px;">Kafka</a> <a href="/tags/MachineLearning/" style="font-size: 12.5px;">MachineLearning</a> <a href="/tags/Misc/" style="font-size: 10px;">Misc</a> <a href="/tags/NServiceBus/" style="font-size: 15px;">NServiceBus</a> <a href="/tags/NoSQL/" style="font-size: 10px;">NoSQL</a> <a href="/tags/SOA/" style="font-size: 17.5px;">SOA</a> <a href="/tags/Spark/" style="font-size: 10px;">Spark</a> <a href="/tags/Storm/" style="font-size: 15px;">Storm</a> <a href="/tags/TensorFlow/" style="font-size: 10px;">TensorFlow</a>
+            <a href="/tags/Azure/" style="font-size: 10px;">Azure</a> <a href="/tags/BigData/" style="font-size: 20px;">BigData</a> <a href="/tags/CQRS/" style="font-size: 15px;">CQRS</a> <a href="/tags/Cassandra/" style="font-size: 12.5px;">Cassandra</a> <a href="/tags/DDD/" style="font-size: 15px;">DDD</a> <a href="/tags/DeepLearning/" style="font-size: 12.5px;">DeepLearning</a> <a href="/tags/EventStore/" style="font-size: 10px;">EventStore</a> <a href="/tags/Hive/" style="font-size: 10px;">Hive</a> <a href="/tags/Kafka/" style="font-size: 12.5px;">Kafka</a> <a href="/tags/ML/" style="font-size: 10px;">ML</a> <a href="/tags/MachineLearning/" style="font-size: 15px;">MachineLearning</a> <a href="/tags/Misc/" style="font-size: 10px;">Misc</a> <a href="/tags/NServiceBus/" style="font-size: 15px;">NServiceBus</a> <a href="/tags/NoSQL/" style="font-size: 10px;">NoSQL</a> <a href="/tags/SOA/" style="font-size: 17.5px;">SOA</a> <a href="/tags/Spark/" style="font-size: 10px;">Spark</a> <a href="/tags/Storm/" style="font-size: 15px;">Storm</a> <a href="/tags/TensorFlow/" style="font-size: 10px;">TensorFlow</a>
         </div>
     </div>
 

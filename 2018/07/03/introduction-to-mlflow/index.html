@@ -3,20 +3,22 @@
 <head>
     <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     
-    <title>NServiceBus Training | Marçal Serrate</title>
+    <title>Introduction to MLflow | Marçal Serrate</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="I will be giving the Udi Dahan&amp;#8216;s Enterprise Development with NServiceBus 4-day course in Spain at:  November 26. Barcelona December 10. Madrid  More info at: http://udidahan.com/2012/10/12/train">
-<meta name="keywords" content="DDD,SOA,CQRS,NServiceBus">
+    <meta name="description" content="MLflow is a tool to manage the lifecycle of Machine Learning projects. Is composed by three components:  Tracking: Records parameters, metrics and artifacts of each run of a model Projects: Format for">
+<meta name="keywords" content="BigData,MachineLearning,ML">
 <meta property="og:type" content="article">
-<meta property="og:title" content="NServiceBus Training">
-<meta property="og:url" content="http://www.serrate.net/2012/09/11/nservicebus-training/index.html">
+<meta property="og:title" content="Introduction to MLflow">
+<meta property="og:url" content="http://www.serrate.net/2018/07/03/introduction-to-mlflow/index.html">
 <meta property="og:site_name" content="Marçal Serrate">
-<meta property="og:description" content="I will be giving the Udi Dahan&amp;#8216;s Enterprise Development with NServiceBus 4-day course in Spain at:  November 26. Barcelona December 10. Madrid  More info at: http://udidahan.com/2012/10/12/train">
+<meta property="og:description" content="MLflow is a tool to manage the lifecycle of Machine Learning projects. Is composed by three components:  Tracking: Records parameters, metrics and artifacts of each run of a model Projects: Format for">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2017-07-02T16:05:26.000Z">
+<meta property="og:image" content="http://www.serrate.net/files/2018/07/1run_artifact.png">
+<meta property="og:updated_time" content="2018-07-02T21:27:35.236Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="NServiceBus Training">
-<meta name="twitter:description" content="I will be giving the Udi Dahan&amp;#8216;s Enterprise Development with NServiceBus 4-day course in Spain at:  November 26. Barcelona December 10. Madrid  More info at: http://udidahan.com/2012/10/12/train">
+<meta name="twitter:title" content="Introduction to MLflow">
+<meta name="twitter:description" content="MLflow is a tool to manage the lifecycle of Machine Learning projects. Is composed by three components:  Tracking: Records parameters, metrics and artifacts of each run of a model Projects: Format for">
+<meta name="twitter:image" content="http://www.serrate.net/files/2018/07/1run_artifact.png">
     
 
     
@@ -145,7 +147,7 @@ ga('send', 'pageview');
 
         <div class="outer">
             
-            <section id="main"><article id="post-nservicebus-training" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-introduction-to-mlflow" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
         
@@ -153,7 +155,7 @@ ga('send', 'pageview');
                 
     
         <h1 class="article-title" itemprop="name">
-            NServiceBus Training
+            Introduction to MLflow
         </h1>
     
 
@@ -162,8 +164,8 @@ ga('send', 'pageview');
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2012/09/11/nservicebus-training/">
-            <time datetime="2012-09-11T21:28:47.000Z" itemprop="datePublished">2012-09-11</time>
+        <a href="/2018/07/03/introduction-to-mlflow/">
+            <time datetime="2018-07-02T22:00:00.000Z" itemprop="datePublished">2018-07-03</time>
         </a>
     </div>
 
@@ -171,13 +173,13 @@ ga('send', 'pageview');
                         
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Architecture/">Architecture</a>
+        <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>
     </div>
 
                         
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/CQRS/">CQRS</a>, <a class="tag-link" href="/tags/DDD/">DDD</a>, <a class="tag-link" href="/tags/NServiceBus/">NServiceBus</a>, <a class="tag-link" href="/tags/SOA/">SOA</a>
+        <a class="tag-link" href="/tags/BigData/">BigData</a>, <a class="tag-link" href="/tags/ML/">ML</a>, <a class="tag-link" href="/tags/MachineLearning/">MachineLearning</a>
     </div>
 
                     </div>
@@ -188,12 +190,25 @@ ga('send', 'pageview');
         <div class="article-entry" itemprop="articleBody">
         
             
-            <p>I will be giving the <a href="http://www.udidahan.com/" target="_blank"><strong>Udi Dahan</strong></a>&#8216;s Enterprise Development with <a href="http://www.nservicebus.com" target="_blank">NServiceBus </a>4-day course in Spain at:</p>
+            <p><a href="https://mlflow.org/" target="_blank">MLflow</a> is a tool to manage the lifecycle of Machine Learning projects. Is composed by three components:</p>
 <ul>
-<li><a title="Register" href="http://masterarquitecturabcn.eventbrite.com/" target="_blank">November 26. Barcelona</a></li>
-<li><a title="Register" href="http://masterarquitecturamad.eventbrite.com/" target="_blank">December 10. Madrid</a></li>
+<li>Tracking: Records parameters, metrics and artifacts of each run of a model</li>
+<li>Projects: Format for packaging data science projects and its dependencies</li>
+<li>Models: Generic format for packaging ML models and serve them through REST API or others.</li>
 </ul>
-<p>More info at: <a href="http://udidahan.com/2012/10/12/training-for-this-winter/" target="_blank">http://udidahan.com/2012/10/12/training-for-this-winter/</a></p>
+<h2 id="ML-Tracking-using-XGBoost"><a href="#ML-Tracking-using-XGBoost" class="headerlink" title="ML Tracking using XGBoost"></a>ML Tracking using XGBoost</h2><p>Let’s work on a quick sample to demonstrate the benefits of <a href="https://www.mlflow.org" target="_blank" rel="noopener">MLFlow</a> by tracking ML experiment using <em>XGBoost</em> and the <a href="https://archive.ics.uci.edu/ml/datasets/Census+Income" target="_blank" rel="noopener">Census Income Data Set</a>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> mlflow.start_run():</span><br><span class="line">    <span class="comment"># model parameters</span></span><br><span class="line">    params = &#123;<span class="string">'learning_rate'</span>: <span class="number">0.1</span>, <span class="string">'n_estimators'</span>: <span class="number">100</span>, <span class="string">'seed'</span>: <span class="number">0</span>, <span class="string">'subsample'</span>: <span class="number">1</span>, <span class="string">'colsample_bytree'</span>: <span class="number">1</span>,</span><br><span class="line">                  <span class="string">'objective'</span>: <span class="string">'binary:logistic'</span>, <span class="string">'max_depth'</span>: <span class="number">3</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># log model params</span></span><br><span class="line">    <span class="keyword">for</span> key <span class="keyword">in</span> params:</span><br><span class="line">        mlflow.log_param(key, params[key])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># train XGBoost model</span></span><br><span class="line">    gbtree = XGBClassifier(**params)</span><br><span class="line">    gbtree.fit(train_features, train_labels)</span><br><span class="line"></span><br><span class="line">    importances = gbtree.get_booster().get_fscore()</span><br><span class="line">    print(importances)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># get predictions</span></span><br><span class="line">    y_pred = gbtree.predict(test_features)</span><br><span class="line"></span><br><span class="line">    accuracy = accuracy_score(test_labels, y_pred)</span><br><span class="line">    print(<span class="string">"Accuracy: %.1f%%"</span> % (accuracy * <span class="number">100.0</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># log accuracy metric</span></span><br><span class="line">    mlflow.log_metric(<span class="string">"accuracy"</span>, accuracy)</span><br><span class="line"></span><br><span class="line">    sns.set(font_scale=<span class="number">1.5</span>)</span><br><span class="line">    xgb.plot_importance(gbtree)</span><br><span class="line">    plt.savefig(<span class="string">"importance.png"</span>, dpi = <span class="number">200</span>, bbox_inches = <span class="string">"tight"</span>)</span><br><span class="line"></span><br><span class="line">    mlflow.log_artifact(<span class="string">"importance.png"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># log model</span></span><br><span class="line">    mlflow.sklearn.log_model(gbtree, <span class="string">"model"</span>)</span><br></pre></td></tr></table></figure>
+<p>In this example, we’re using the MLflow Python API to track the experiment parameters, metric (accuracy), artifacts (our plot) and the XGBoost model.</p>
+<p>When we run for the first time, we can see in the MLflow UI the following:</p>
+<img src="/files/2018/07/1run.png">
+<p>With our initial parameters we see that the metric accuracy is: <strong>0.866 (86.6%)</strong></p>
+<p>If we select the run and we see our artifact:</p>
+<img src="/files/2018/07/1run_artifact.png">
+<p>Next, we will change our parameter <em>max_depth</em> to 6 and let’s see what happens:</p>
+<img src="/files/2018/07/2run.png">
+<p>And we see that our accuract has improved: <strong>0.874 (87.4%)</strong></p>
+<p>All the history is tracked, as well as the model itself, so it means we will have all our experiments history tracked and the performance on the model at one moment in time.</p>
+<p>You can check the full sample in Github <a href="https://github.com/mserrate/mlflow-sample" target="_blank" rel="noopener">https://github.com/mserrate/mlflow-sample</a>.</p>
 
         
         </div>
@@ -204,7 +219,7 @@ ga('send', 'pageview');
 
 </div>
 
-    <a data-url="http://www.serrate.net/2012/09/11/nservicebus-training/" data-id="cjdt7e7530007er81hvy5s84p" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://www.serrate.net/2018/07/03/introduction-to-mlflow/" data-id="cjj4qyls40000v781epth8ekt" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -272,7 +287,7 @@ ga('send', 'pageview');
 
             
     
-        <a href="http://www.serrate.net/2012/09/11/nservicebus-training/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2012/09/11/nservicebus-training/">Comments</a>
+        <a href="http://www.serrate.net/2018/07/03/introduction-to-mlflow/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://www.serrate.net/2018/07/03/introduction-to-mlflow/">Comments</a>
     
 
         </footer>
@@ -281,19 +296,10 @@ ga('send', 'pageview');
         
 <nav id="article-nav">
     
-        <a href="/2012/10/16/nservicebus-dry-with-unobtrusive-conventions/" id="article-nav-newer" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">Newer</strong>
-            <div class="article-nav-title">
-                
-                    NServiceBus: DRY with unobtrusive conventions
-                
-            </div>
-        </a>
     
-    
-        <a href="/2012/08/27/cassandra-on-azure-centos-vm/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/2018/06/30/azure-databricks-hive-metastore/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">Older</strong>
-            <div class="article-nav-title">Cassandra on Azure CentOS VM</div>
+            <div class="article-nav-title">Using an external Hive Metastore in Azure Databricks</div>
         </a>
     
 </nav>
@@ -493,9 +499,9 @@ ga('send', 'pageview');
     <script>
     var disqus_config = function () {
         
-            this.page.url = 'http://www.serrate.net/2012/09/11/nservicebus-training/';
+            this.page.url = 'http://www.serrate.net/2018/07/03/introduction-to-mlflow/';
         
-        this.page.identifier = 'nservicebus-training';
+        this.page.identifier = 'introduction-to-mlflow';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
